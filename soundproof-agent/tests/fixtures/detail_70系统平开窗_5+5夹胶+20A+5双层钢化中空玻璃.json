@@ -1,0 +1,15 @@
+{
+  "platform": "taobao",
+  "title": "70系统平开窗 5+5夹胶+20A+5双层钢化中空玻璃",
+  "price_text": "718元/㎡",
+  "shop_name": "XX门窗旗舰店",
+  "detail_url": "https://example.com/detail-a",
+  "glass_spec": "5+5夹胶+20A+5双层钢化中空玻璃",
+  "frame_spec": "70系统平开窗",
+  "seal_spec": "三道密封",
+  "hardware_keyword": "HOPO执手",
+  "installation_services": ["测量", "安装", "拆旧"],
+  "extracted_keywords": ["5+5夹胶+20A+5双层钢化中空玻璃", "70系统平开窗", "三道密封", "HOPO执手"],
+  "raw_spec_text": "70系统平开窗 5+5夹胶+20A+5双层钢化中空玻璃 三道密封 HOPO执手 包测量安装拆旧",
+  "risk_flags": []
+}

@@ -1,0 +1,15 @@
+{
+  "platform": "taobao",
+  "title": "四玻双夹胶单中空 高配隔音窗",
+  "price_text": "980元/㎡",
+  "shop_name": "YY高配门窗店",
+  "detail_url": "https://example.com/detail-b",
+  "glass_spec": "四玻双夹胶单中空",
+  "frame_spec": "108系统窗",
+  "seal_spec": "四道密封",
+  "hardware_keyword": "好博",
+  "installation_services": ["测量", "安装", "运输"],
+  "extracted_keywords": ["四玻双夹胶单中空", "108系统窗", "四道密封", "好博"],
+  "raw_spec_text": "108系统窗 四玻双夹胶单中空 四道密封 好博五金 包测量安装运输",
+  "risk_flags": []
+}

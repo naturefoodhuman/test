@@ -1,0 +1,15 @@
+<!--
+创建该文件的LLM大模型名称：Arena.ai Agent Mode
+创建时间（北京时间，精确到秒）：2026-05-29 01:05:41 CST
+-->
+{% extends "base.html" %}
+{% block title %}Artifact - {{ artifact_name }}{% endblock %}
+{% block content %}
+<h1>Artifact：{{ artifact_name }}</h1>
+<div class="row" style="margin-bottom: 12px;">
+  <a href="javascript:history.back()">← 返回上一页</a>
+</div>
+<div class="card">
+  <pre>{{ content }}</pre>
+</div>
+{% endblock %}

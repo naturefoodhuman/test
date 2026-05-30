@@ -1,0 +1,42 @@
+[
+  {
+    "id": "coordinator_001",
+    "task_type": "coordinator",
+    "title": "高架低频卧室场景追问",
+    "prompt": "用户说：‘卧室窗外是高架，晚上有水泥搅拌车，窗户是老式钢窗外开，我想要性价比高的方案。’ 请你作为协调员，只输出下一轮最应该追问的槽位和原因。输出 JSON，字段必须包含 next_questions、missing_slots、mode_guess。",
+    "expect_json": true,
+    "json_schema": {
+      "type": "object",
+      "properties": {
+        "mode_guess": {"type": "string"},
+        "missing_slots": {"type": "array", "items": {"type": "string"}},
+        "next_questions": {"type": "array", "items": {"type": "string"}},
+        "reason": {"type": "string"}
+      },
+      "required": ["mode_guess", "missing_slots", "next_questions"]
+    },
+    "expected_keywords": ["预算", "尺寸", "低频", "是否加内窗"],
+    "forbidden_keywords": ["下单", "付款"],
+    "notes": "测试协调员是否会问对问题，而不是直接开讲方案。"
+  },
+  {
+    "id": "coordinator_002",
+    "task_type": "coordinator",
+    "title": "低预算临街高层快速评估",
+    "prompt": "用户说：‘临街高层卧室，晚上车流噪音，预算3000。’ 你需要判断这是适合 quick 还是 full 模式，并给出最少必要追问。输出 JSON，字段必须包含 mode_guess、missing_slots、next_questions。",
+    "expect_json": true,
+    "json_schema": {
+      "type": "object",
+      "properties": {
+        "mode_guess": {"type": "string"},
+        "missing_slots": {"type": "array", "items": {"type": "string"}},
+        "next_questions": {"type": "array", "items": {"type": "string"}},
+        "budget_risk": {"type": "string"}
+      },
+      "required": ["mode_guess", "missing_slots", "next_questions"]
+    },
+    "expected_keywords": ["窗型", "尺寸", "能否加内窗"],
+    "forbidden_keywords": ["立即购买", "收藏店铺"],
+    "notes": "测试低预算场景下是否还能保持追问质量。"
+  }
+]

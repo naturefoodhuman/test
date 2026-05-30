@@ -1,0 +1,96 @@
+<!--
+创建该文件的LLM大模型名称：Arena.ai Agent Mode
+创建时间（北京时间，精确到秒）：2026-05-29 14:02:18 CST
+-->
+{% extends "base.html" %}
+{% block title %}运行详情 - {{ run_id }}{% endblock %}
+{% block content %}
+<h1>运行详情：{{ run_id }}</h1>
+<div class="row" style="margin-bottom: 12px;">
+  <a href="/">← 返回首页</a>
+  <a href="/runs/{{ run_id }}/artifacts">查看 Artifact Manifest</a>
+  <form method="post" action="/runs/{{ run_id }}/archive" style="display:inline;">
+    <button type="submit">导出 ZIP 档案</button>
+  </form>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h2>运行数据</h2>
+    <pre>{{ run_payload | tojson(indent=2) }}</pre>
+  </div>
+  <div class="card">
+    <h2>Markdown 报告</h2>
+    <pre>{{ report_text or '暂无报告' }}</pre>
+  </div>
+</div>
+
+<div class="card">
+  <h2>工作流备注</h2>
+  {% if workflow_notes %}
+  <ul>
+    {% for item in workflow_notes %}
+      <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="muted">暂无</div>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>步骤轨迹</h2>
+  {% if step_traces %}
+  <table>
+    <thead>
+      <tr><th>step</th><th>status</th><th>duration_ms</th><th>notes</th></tr>
+    </thead>
+    <tbody>
+      {% for item in step_traces %}
+      <tr>
+        <td>{{ item.step }}</td>
+        <td>{{ item.status }}</td>
+        <td>{{ item.duration_ms }}</td>
+        <td>{{ '；'.join(item.notes) if item.notes else '' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="muted">暂无 step traces</div>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>关联产物（{{ artifact_count }}）</h2>
+  {% if artifact_names %}
+  <ul>
+    {% for name in artifact_names %}
+      <li><span class="badge">artifact</span> <a href="/artifacts/{{ name }}">{{ name }}</a></li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="muted">暂无 artifact</div>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>Artifact Manifest</h2>
+  {% if artifact_manifest %}
+  <table>
+    <thead><tr><th>name</th><th>size_bytes</th><th>modified_time</th></tr></thead>
+    <tbody>
+      {% for item in artifact_manifest %}
+      <tr>
+        <td>{{ item.name }}</td>
+        <td>{{ item.size_bytes }}</td>
+        <td>{{ item.modified_time }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="muted">暂无 artifact manifest</div>
+  {% endif %}
+</div>
+{% endblock %}

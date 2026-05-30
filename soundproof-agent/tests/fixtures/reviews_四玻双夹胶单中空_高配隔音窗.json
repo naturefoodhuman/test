@@ -1,0 +1,16 @@
+[
+  {
+    "review_id": "r4",
+    "rating": 5,
+    "content": "地铁经过时声音小了很多，双夹胶和四道密封比之前的普通窗强不少。",
+    "image_count": 1,
+    "is_anonymous": false
+  },
+  {
+    "review_id": "r5",
+    "rating": 4,
+    "content": "不错",
+    "image_count": 0,
+    "is_anonymous": true
+  }
+]

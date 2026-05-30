@@ -1,0 +1,47 @@
+[
+  {
+    "id": "shopping_extract_001",
+    "task_type": "shopping_extract",
+    "title": "从商品标题和片段提取规格",
+    "prompt": "请从以下商品文本中提取结构化信息并输出 JSON：‘断桥铝系统窗卧室隔音窗定制，5+5夹胶+20A+5钢化中空，三道密封，HOPO执手，参考价798元/㎡，包测量安装拆旧，店铺：XX门窗旗舰店，已售300+。’ 字段必须包含 title、price_text、shop_name、glass_spec、seal_spec、hardware_keyword、service_keywords。",
+    "expect_json": true,
+    "json_schema": {
+      "type": "object",
+      "properties": {
+        "title": {"type": "string"},
+        "price_text": {"type": "string"},
+        "shop_name": {"type": "string"},
+        "glass_spec": {"type": "string"},
+        "seal_spec": {"type": "string"},
+        "hardware_keyword": {"type": "string"},
+        "service_keywords": {"type": "array", "items": {"type": "string"}}
+      },
+      "required": ["title", "price_text", "shop_name", "glass_spec", "seal_spec", "service_keywords"]
+    },
+    "expected_keywords": ["夹胶", "20A", "三道密封", "安装"],
+    "forbidden_keywords": ["付款", "下单"],
+    "notes": "测试模型抽字段与保留关键信息的能力。"
+  },
+  {
+    "id": "shopping_extract_002",
+    "task_type": "shopping_extract",
+    "title": "从报价案例提取结构化方案",
+    "prompt": "请把以下报价文本整理为 JSON：‘70系统平开窗 4.88㎡ 单价598，70开扇/五金 2㎡ 单价680，隐形纱窗 2㎡ 单价350，升级夹胶中空 4.88㎡ 单价120，人工运费500，合计6064，包含测量安装拆旧防水运输。玻璃配置：5+5夹胶+20A+5双层钢化中空玻璃。壁厚1.8，PA66隔热条，三元乙丙密封条。’ 字段必须包含 window_system、glass_spec、wall_thickness_mm、seal_material、included_services、total_price。",
+    "expect_json": true,
+    "json_schema": {
+      "type": "object",
+      "properties": {
+        "window_system": {"type": "string"},
+        "glass_spec": {"type": "string"},
+        "wall_thickness_mm": {"type": "string"},
+        "seal_material": {"type": "string"},
+        "included_services": {"type": "array", "items": {"type": "string"}},
+        "total_price": {"type": "string"}
+      },
+      "required": ["window_system", "glass_spec", "wall_thickness_mm", "seal_material", "included_services", "total_price"]
+    },
+    "expected_keywords": ["1.8", "PA66", "三元乙丙", "拆旧"],
+    "forbidden_keywords": ["收藏"],
+    "notes": "测试模型把复杂报价文本转成可比较字段的能力。"
+  }
+]

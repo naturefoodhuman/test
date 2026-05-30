@@ -1,0 +1,15 @@
+<!--
+创建该文件的LLM大模型名称：Arena.ai Agent Mode
+创建时间（北京时间，精确到秒）：2026-05-29 02:53:27 CST
+-->
+{% extends "base.html" %}
+{% block title %}运行对比 - Soundproof Agent{% endblock %}
+{% block content %}
+<h1>运行对比</h1>
+<div class="row" style="margin-bottom: 12px;">
+  <a href="/">← 返回首页</a>
+</div>
+<div class="card">
+  <pre>{{ comparison | tojson(indent=2) }}</pre>
+</div>
+{% endblock %}

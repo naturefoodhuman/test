@@ -1,0 +1,31 @@
+<!--
+创建该文件的LLM大模型名称：Arena.ai Agent Mode
+创建时间（北京时间，精确到秒）：2026-05-29 14:36:08 CST
+-->
+{% extends "base.html" %}
+{% block title %}事件日志 - Soundproof Agent{% endblock %}
+{% block content %}
+<h1>事件日志</h1>
+<div class="row" style="margin-bottom: 12px;">
+  <a href="/">← 返回首页</a>
+</div>
+<div class="card">
+  {% if events %}
+  <table>
+    <thead><tr><th>id</th><th>event_type</th><th>payload</th><th>created_at</th></tr></thead>
+    <tbody>
+      {% for item in events %}
+      <tr>
+        <td>{{ item.id }}</td>
+        <td>{{ item.event_type }}</td>
+        <td><pre>{{ item.payload | tojson(indent=2) }}</pre></td>
+        <td>{{ item.created_at }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="muted">暂无事件日志</div>
+  {% endif %}
+</div>
+{% endblock %}

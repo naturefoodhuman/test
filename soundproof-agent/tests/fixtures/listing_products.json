@@ -1,0 +1,20 @@
+[
+  {
+    "platform": "taobao",
+    "title": "70系统平开窗 5+5夹胶+20A+5双层钢化中空玻璃",
+    "price_text": "718元/㎡",
+    "sales_text": "已售300+",
+    "shop_name": "XX门窗旗舰店",
+    "detail_url": "https://example.com/detail-a",
+    "source_rank": 1
+  },
+  {
+    "platform": "taobao",
+    "title": "四玻双夹胶单中空 高配隔音窗",
+    "price_text": "980元/㎡",
+    "sales_text": "已售90+",
+    "shop_name": "YY高配门窗店",
+    "detail_url": "https://example.com/detail-b",
+    "source_rank": 2
+  }
+]

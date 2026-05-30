@@ -1,0 +1,42 @@
+[
+  {
+    "id": "shopping_summary_001",
+    "task_type": "shopping_summary",
+    "title": "针对高架低频卧室给出对比建议",
+    "prompt": "已知用户场景：‘卧室靠高架，夜间有低频搅拌车，重视性价比。’ 现有三个候选商品：1）A店：5+27A+5中空，598元/㎡，两道密封；2）B店：5+5夹胶+20A+5中空，718元/㎡，三道密封；3）C店：8+1.52PVB+8夹胶单层，660元/㎡，适合加内窗。请输出 JSON，字段必须包含 recommended_option、reason_summary、risk_points、search_refinement。",
+    "expect_json": true,
+    "json_schema": {
+      "type": "object",
+      "properties": {
+        "recommended_option": {"type": "string"},
+        "reason_summary": {"type": "string"},
+        "risk_points": {"type": "array", "items": {"type": "string"}},
+        "search_refinement": {"type": "array", "items": {"type": "string"}}
+      },
+      "required": ["recommended_option", "reason_summary", "risk_points", "search_refinement"]
+    },
+    "expected_keywords": ["夹胶", "低频", "密封"],
+    "forbidden_keywords": ["无脑最便宜"],
+    "notes": "测试模型是否会为了便宜忽略低频与密封。"
+  },
+  {
+    "id": "shopping_summary_002",
+    "task_type": "shopping_summary",
+    "title": "儿童房高配方案对比",
+    "prompt": "已知用户场景：‘儿童房靠地铁，预算偏高，可以接受高配方案。’ 现有三个候选商品：1）A店：普通中空三玻，2）B店：四玻双夹胶单中空，3）C店：夹胶中空但推拉窗结构。请输出 JSON，字段必须包含 recommended_option、reason_summary、risk_points、search_refinement。",
+    "expect_json": true,
+    "json_schema": {
+      "type": "object",
+      "properties": {
+        "recommended_option": {"type": "string"},
+        "reason_summary": {"type": "string"},
+        "risk_points": {"type": "array", "items": {"type": "string"}},
+        "search_refinement": {"type": "array", "items": {"type": "string"}}
+      },
+      "required": ["recommended_option", "reason_summary", "risk_points", "search_refinement"]
+    },
+    "expected_keywords": ["地铁", "推拉窗", "高配", "夹胶"],
+    "forbidden_keywords": ["结构无所谓"],
+    "notes": "测试模型是否会正确识别‘高配+轨道噪声’的优先级。"
+  }
+]

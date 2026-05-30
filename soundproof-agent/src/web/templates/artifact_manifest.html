@@ -1,0 +1,30 @@
+<!--
+创建该文件的LLM大模型名称：Arena.ai Agent Mode
+创建时间（北京时间，精确到秒）：2026-05-29 14:02:18 CST
+-->
+{% extends "base.html" %}
+{% block title %}Artifact Manifest - {{ run_id }}{% endblock %}
+{% block content %}
+<h1>Artifact Manifest：{{ run_id }}</h1>
+<div class="row" style="margin-bottom: 12px;">
+  <a href="/runs/{{ run_id }}">← 返回运行详情</a>
+</div>
+<div class="card">
+  {% if artifact_manifest %}
+  <table>
+    <thead><tr><th>name</th><th>size_bytes</th><th>modified_time</th></tr></thead>
+    <tbody>
+      {% for item in artifact_manifest %}
+      <tr>
+        <td><a href="/artifacts/{{ item.name }}">{{ item.name }}</a></td>
+        <td>{{ item.size_bytes }}</td>
+        <td>{{ item.modified_time }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="muted">暂无 artifact manifest</div>
+  {% endif %}
+</div>
+{% endblock %}

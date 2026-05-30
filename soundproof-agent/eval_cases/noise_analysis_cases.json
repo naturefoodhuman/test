@@ -1,0 +1,44 @@
+[
+  {
+    "id": "noise_001",
+    "task_type": "noise_analysis",
+    "title": "高架+搅拌车低频场景",
+    "prompt": "请分析以下噪音描述，并输出 JSON：‘卧室窗外是高架，平时持续车流，晚上偶尔有水泥搅拌车低沉轰隆声，关窗后仍然明显，睡觉容易被惊醒。’ 字段必须包含 noise_type、frequency_profile、estimated_spl_range、recommended_reduction_db。",
+    "expect_json": true,
+    "json_schema": {
+      "type": "object",
+      "properties": {
+        "noise_type": {"type": "string"},
+        "frequency_profile": {"type": "string"},
+        "estimated_spl_range": {"type": "string"},
+        "recommended_reduction_db": {"type": "string"},
+        "reason": {"type": "string"}
+      },
+      "required": ["noise_type", "frequency_profile", "estimated_spl_range", "recommended_reduction_db"]
+    },
+    "expected_keywords": ["交通", "低频", "隔声"],
+    "forbidden_keywords": ["中空完全解决"],
+    "notes": "测试模型能否识别低频交通噪声。"
+  },
+  {
+    "id": "noise_002",
+    "task_type": "noise_analysis",
+    "title": "商铺外机不换整窗场景",
+    "prompt": "请分析以下噪音描述，并输出 JSON：‘老小区二楼，楼下商铺空调外机白天和晚上都有嗡嗡声，主要想先不换整窗，看看能不能先加一层或做局部处理。’ 字段必须包含 noise_type、frequency_profile、estimated_spl_range、recommended_reduction_db。",
+    "expect_json": true,
+    "json_schema": {
+      "type": "object",
+      "properties": {
+        "noise_type": {"type": "string"},
+        "frequency_profile": {"type": "string"},
+        "estimated_spl_range": {"type": "string"},
+        "recommended_reduction_db": {"type": "string"},
+        "priority_hint": {"type": "string"}
+      },
+      "required": ["noise_type", "frequency_profile", "estimated_spl_range", "recommended_reduction_db"]
+    },
+    "expected_keywords": ["机械", "低频", "加装"],
+    "forbidden_keywords": ["必须拆窗"],
+    "notes": "测试模型是否会把局部机械低频与交通噪声区分开。"
+  }
+]

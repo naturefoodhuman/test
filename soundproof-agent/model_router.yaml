@@ -1,0 +1,59 @@
+# 创建该文件的LLM大模型名称：Arena.ai Agent Mode
+# 创建时间（北京时间，精确到秒）：2026-05-27 22:10:40 CST
+
+status: finalized_after_phase0
+principles:
+  - 本地模型优先
+  - 购物链路优先稳定，不优先炫技
+  - 确定性浏览器执行优先，LLM 负责理解与归纳
+  - 商业模型只做兜底，不默认启用
+  - 开发流程由 Arena.ai Agent Mode 主导，不依赖 Claude Code
+
+routes:
+  project_development:
+    primary: arena-ai-agent-mode
+    note: 规划、开发、测试、文档全部由 Arena.ai Agent Mode 主导完成
+
+  coordinator:
+    primary: qwen3.6:35b-a3b-q8_0
+    fallback: qwen3:14b
+    escalation: deepseek-chat
+    basis: round1_semantic_quality_best
+
+  noise_analysis:
+    primary: qwen3.6:35b-a3b-q8_0
+    fallback: qwen3:14b
+    escalation: deepseek-chat
+    basis: round1_more_reliable_reduction_estimation
+
+  solution_advisor:
+    primary: qwen3.6:35b-a3b-q8_0
+    fallback: qwen3:14b
+    escalation: deepseek-chat
+    basis: global_reasoning_quality_and_domain_alignment
+
+  shopping_reasoner:
+    primary: qwen3-coder-next:q4_K_M
+    fallback: qwen3.6:35b-a3b-q8_0
+    escalation: deepseek-chat
+    basis: round2_shopping_summary_quality_best
+
+  shopping_field_normalizer:
+    primary: qwen3:14b
+    fallback: qwen3-coder-next:q4_K_M
+    note: round1 在短商品文本字段补全上更积极；若真实页面表现不佳，再切 coder-next
+
+  shopping_executor:
+    primary: deterministic_playwright
+    fallback: headed_playwright_with_manual_takeover
+    note: V1 不让纯 AI 浏览器代理做主链
+
+  shopping_summary:
+    primary: qwen3-coder-next:q4_K_M
+    fallback: qwen3.6:35b-a3b-q8_0
+    escalation: deepseek-chat
+    basis: round2_shopping_summary_quality_best
+
+  embeddings:
+    primary: qwen3-embedding:8b
+    fallback: bge-m3:latest

@@ -1,0 +1,23 @@
+[
+  {
+    "review_id": "r1",
+    "rating": 5,
+    "content": "装完以后临街噪音小了很多，5+5夹胶加三道密封确实有效，晚上睡觉明显安静。",
+    "image_count": 2,
+    "is_anonymous": false
+  },
+  {
+    "review_id": "r2",
+    "rating": 5,
+    "content": "很好",
+    "image_count": 0,
+    "is_anonymous": true
+  },
+  {
+    "review_id": "r3",
+    "rating": 3,
+    "content": "安装后还是有一点漏风，不过比之前老钢窗好很多。",
+    "image_count": 0,
+    "is_anonymous": false
+  }
+]

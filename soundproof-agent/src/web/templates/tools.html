@@ -1,0 +1,130 @@
+<!--
+创建该文件的LLM大模型名称：Arena.ai Agent Mode
+# 创建时间（北京时间，精确到秒）：2026-05-29 15:18:42 CST
+-->
+{% extends "base.html" %}
+{% block title %}联调工具 - Soundproof Agent{% endblock %}
+{% block content %}
+<h1>联调工具页</h1>
+<div class="row" style="margin-bottom: 12px;">
+  <a href="/">← 返回首页</a>
+</div>
+
+<div class="card">
+  <h2>全链路探针</h2>
+  <form method="post" action="/tools/probe-full">
+    <div class="row"><input name="query" value="隔音窗 夹胶中空 系统窗 性价比" style="width:100%;" /></div>
+    <div class="row"><input name="title" placeholder="商品标题" style="width:100%;" /></div>
+    <div class="row"><input name="detail_url" placeholder="https://item.taobao.com/item.htm?id=..." style="width:100%;" /></div>
+    <div class="row"><input name="wait_after_load_ms" type="number" value="3000" /><input name="review_limit" type="number" value="10" /></div>
+    <div class="row"><button type="submit">运行全链路探针</button></div>
+  </form>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h2>搜索页探针</h2>
+    <form method="post" action="/tools/probe-search">
+      <div class="row"><input name="query" value="隔音窗 夹胶中空 系统窗 性价比" style="width:100%;" /></div>
+      <div class="row"><input name="wait_after_load_ms" type="number" value="3000" /></div>
+      <div class="row"><button type="submit">运行搜索页探针</button></div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>详情页探针</h2>
+    <form method="post" action="/tools/probe-detail">
+      <div class="row"><input name="detail_url" placeholder="https://item.taobao.com/item.htm?id=..." style="width:100%;" /></div>
+      <div class="row"><input name="wait_after_load_ms" type="number" value="3000" /></div>
+      <div class="row"><button type="submit">运行详情页探针</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <h2>评论探针</h2>
+  <form method="post" action="/tools/probe-reviews">
+    <div class="row"><input name="title" placeholder="商品标题" style="width:100%;" /></div>
+    <div class="row"><input name="detail_url" placeholder="https://item.taobao.com/item.htm?id=..." style="width:100%;" /></div>
+    <div class="row"><input name="limit" type="number" value="10" /></div>
+    <div class="row"><button type="submit">运行评论探针</button></div>
+  </form>
+</div>
+
+<div class="card">
+  <h2>当前选择器状态</h2>
+  <pre>{{ selector_status | tojson(indent=2) }}</pre>
+</div>
+
+<div class="card">
+  <h2>Selector Override</h2>
+  <pre>{{ selector_override_validation | tojson(indent=2) }}</pre>
+  <h3>与默认配置差异</h3>
+  <pre>{{ selector_override_diff | tojson(indent=2) }}</pre>
+  {% if save_message %}
+  <div class="badge">{{ save_message }}</div>
+  {% endif %}
+  <form method="post" action="/tools/save-selector-override">
+    <div class="row">
+      <textarea name="selector_override_content" style="width:100%; min-height:260px; background:#020617; color:#e2e8f0; border:1px solid #334155; border-radius:8px; padding:12px;">{{ selector_override_content or '' }}</textarea>
+    </div>
+    <div class="row"><button type="submit">保存 Selector Override</button></div>
+  </form>
+  <form method="post" action="/tools/reset-selector-override" style="margin-top:12px;">
+    <div class="row"><button type="submit">重置为默认模板</button></div>
+  </form>
+  <h3>最近备份</h3>
+  {% if selector_backups %}
+  <ul>
+    {% for name in selector_backups %}
+      <li>
+        {{ name }}
+        <form method="post" action="/tools/preview-selector-backup" style="display:inline;">
+          <input type="hidden" name="backup_name" value="{{ name }}" />
+          <button type="submit">预览</button>
+        </form>
+        <form method="post" action="/tools/restore-selector-override" style="display:inline;">
+          <input type="hidden" name="backup_name" value="{{ name }}" />
+          <button type="submit">恢复</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="muted">暂无 selector 备份</div>
+  {% endif %}
+
+  {% if backup_preview %}
+  <h3>备份预览：{{ backup_preview.name }}</h3>
+  <pre>{{ backup_preview.content }}</pre>
+  {% endif %}
+</div>
+
+{% if full_probe_result %}
+<div class="card">
+  <h2>全链路探针结果</h2>
+  <pre>{{ full_probe_result | tojson(indent=2) }}</pre>
+</div>
+{% endif %}
+
+{% if search_probe_result %}
+<div class="card">
+  <h2>搜索页探针结果</h2>
+  <pre>{{ search_probe_result | tojson(indent=2) }}</pre>
+</div>
+{% endif %}
+
+{% if detail_probe_result %}
+<div class="card">
+  <h2>详情页探针结果</h2>
+  <pre>{{ detail_probe_result | tojson(indent=2) }}</pre>
+</div>
+{% endif %}
+
+{% if review_probe_result %}
+<div class="card">
+  <h2>评论探针结果</h2>
+  <pre>{{ review_probe_result | tojson(indent=2) }}</pre>
+</div>
+{% endif %}
+{% endblock %}

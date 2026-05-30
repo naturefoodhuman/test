@@ -1,0 +1,61 @@
+# 创建该文件的LLM大模型名称：Arena.ai Agent Mode
+# 创建时间（北京时间，精确到秒）：2026-05-29 01:18:32 CST
+
+phase0:
+  output_root: phase0_outputs
+  timeout_seconds: 180
+  ollama:
+    base_url: http://localhost:11434
+  candidates:
+    - name: qwen3.6:35b-a3b-q8_0
+      enabled: true
+      temperature: 0.2
+      role_hints:
+        - coordinator
+        - planner
+        - final_synthesis
+    - name: qwen3:14b
+      enabled: true
+      temperature: 0.2
+      role_hints:
+        - noise_analysis
+        - solution_advisor
+        - shopping_summary
+    - name: qwen3-coder-next:q4_K_M
+      enabled: false
+      temperature: 0.1
+      role_hints:
+        - shopping_reasoner
+        - schema_alignment
+        - shopping_extract_enhancement
+    - name: deepseek-chat
+      enabled: false
+      temperature: 0.2
+      role_hints:
+        - cloud_fallback
+  case_files:
+    coordinator: eval_cases/coordinator_cases.json
+    noise_analysis: eval_cases/noise_analysis_cases.json
+    shopping_extract: eval_cases/shopping_extract_cases.json
+    shopping_summary: eval_cases/shopping_summary_cases.json
+
+phase1:
+  shopping:
+    platform: taobao
+    browser_profile_root: runtime/browser_profiles
+    artifact_root: runtime/artifacts
+    cache_db_path: runtime/cache/shopping_cache.sqlite3
+    selector_override_path: runtime/selector_overrides.yaml
+    default_search_limit: 5
+    headed: true
+    allow_login_reuse: true
+    reviews:
+      enabled: true
+      top_n: 3
+      fetch_limit_per_product: 8
+    anti_bot:
+      max_detail_pages_per_run: 5
+      max_searches_per_hour: 20
+      max_review_fetches_per_run: 3
+      base_delay_seconds: 2.5
+      enforce_delay: false
