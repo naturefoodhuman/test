@@ -1,9 +1,10 @@
 {
-  "is_logged_in": true,
+  "is_logged_in": false,
   "confidence": "high",
   "signals": [
     "cookie_nick",
-    "cookie_token"
+    "cookie_token",
+    "body_login_hint"
   ],
   "login_hint_present": true,
   "nickname_candidates": [
@@ -35,20 +36,31 @@
     "_tb_token_",
     "sca",
     "x5secdata",
-    "isg",
     "3PcFlag",
-    "tfstk"
+    "tfstk",
+    "isg"
   ],
   "url": "https://www.taobao.com/",
   "body_preview": "中国大陆  亲，请登录 免费注册 网页无障碍 切换企业版 选择主题  已买到的宝贝 我的淘宝   购物车  收藏夹  免费开店  千牛卖家中心  帮助中心  距结束 时 分 秒 淘宝网 宝贝 天猫 店铺 搜索 搜同款 天猫 淘宝直播 淘宝企业购 司法拍卖 天猫超市 国家补贴 领券中心 618抢先购 全部频道 618现货抢先购大牌5折起 电脑配件办公文具 工业品商业",
   "attempts": [
     {
       "attempt": 1,
-      "is_logged_in": true,
+      "is_logged_in": false,
       "confidence": "high",
       "signals": [
         "cookie_nick",
-        "cookie_token"
+        "cookie_token",
+        "body_login_hint"
+      ]
+    },
+    {
+      "attempt": 2,
+      "is_logged_in": false,
+      "confidence": "high",
+      "signals": [
+        "cookie_nick",
+        "cookie_token",
+        "body_login_hint"
       ]
     }
   ]

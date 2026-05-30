@@ -1,8 +1,9 @@
 {
-  "is_logged_in": true,
+  "is_logged_in": false,
   "confidence": "high",
   "signals": [
     "cookie_nick",
+    "cookie_token",
     "body_login_hint"
   ],
   "login_hint_present": true,
@@ -19,9 +20,6 @@
     "切换企业版"
   ],
   "cookie_keys": [
-    "mtop_partitioned_detect",
-    "_m_h5_tk",
-    "_m_h5_tk_enc",
     "arms_uid",
     "xlly_s",
     "cna",
@@ -32,11 +30,14 @@
     "tracknick",
     "aui",
     "_cc_",
+    "mtop_partitioned_detect",
+    "_m_h5_tk",
+    "_m_h5_tk_enc",
     "_tb_token_",
     "sca",
     "x5secdata",
-    "isg",
     "3PcFlag",
+    "isg",
     "tfstk"
   ],
   "url": "https://www.taobao.com/",

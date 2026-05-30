@@ -1,13 +1,13 @@
 <!--
 创建该文件的LLM大模型名称：Arena.ai Agent Mode
-创建时间（北京时间，精确到秒）：2026-05-30 17:05:05 CST
+创建时间（北京时间，精确到秒）：2026-05-30 23:22:46 CST
 -->
 
-# 补丁说明 patch_20260530_170505
+# 补丁说明 patch_20260530_232246
 
-- **时间**：2026-05-30 17:05:05 CST
-- **描述**：登录态UX优化_文件头规范_gitignore
-- **包含文件数**：15
+- **时间**：2026-05-30 23:22:46 CST
+- **描述**：登录态判定逻辑优化：以UI提示为最高优先级，解决过早关闭浏览器及Session同步问题
+- **包含文件数**：2
 - **目标覆盖路径**：`/Users/naturist/MusicProject/Shopping-Agent/soundproof-agent`
 
 ## 应用方法
@@ -16,7 +16,7 @@
 
 ```bash
 cd /Users/naturist/MusicProject/Shopping-Agent
-unzip -o /path/to/patch_20260530_170505_*.zip
+unzip -o /path/to/patch_20260530_232246_*.zip
 ```
 
 或解压后手动覆盖。zip 内目录从 `soundproof-agent/` 开始。
@@ -39,20 +39,7 @@ git restore <受影响的文件路径>
 
 ## 包含的文件清单
 
-- `.gitignore` （仓库根级文件，覆盖到 `/Users/naturist/MusicProject/Shopping-Agent/.gitignore`）
-- `docs/AGENT_HANDOFF.md` （即 `soundproof-agent/docs/AGENT_HANDOFF.md`）
-- `docs/BACKLOG.md` （即 `soundproof-agent/docs/BACKLOG.md`）
-- `docs/CHANGELOG.md` （即 `soundproof-agent/docs/CHANGELOG.md`）
-- `docs/CURRENT_STATE.md` （即 `soundproof-agent/docs/CURRENT_STATE.md`）
-- `docs/ONBOARDING_CHECKLIST.md` （即 `soundproof-agent/docs/ONBOARDING_CHECKLIST.md`）
-- `docs/phase1_real_test_checklist.md` （即 `soundproof-agent/docs/phase1_real_test_checklist.md`）
-- `docs/隔音窗专家咨询与购物辅助Agent系统-项目需求文档-V1.docx` （即 `soundproof-agent/docs/隔音窗专家咨询与购物辅助Agent系统-项目需求文档-V1.docx`）
-- `docs/隔音窗专家咨询与购物辅助Agent系统-项目需求文档-V1.md` （即 `soundproof-agent/docs/隔音窗专家咨询与购物辅助Agent系统-项目需求文档-V1.md`）
-- `scripts/make_patch.py` （即 `soundproof-agent/scripts/make_patch.py`）
-- `scripts/sync_v1_docx.py` （即 `soundproof-agent/scripts/sync_v1_docx.py`）
-- `src/phase1_cli.py` （即 `soundproof-agent/src/phase1_cli.py`）
 - `src/shopping/playwright_executor.py` （即 `soundproof-agent/src/shopping/playwright_executor.py`）
 - `tests/test_login_signal_logic.py` （即 `soundproof-agent/tests/test_login_signal_logic.py`）
-- `tests/test_playwright_executor_dry.py` （即 `soundproof-agent/tests/test_playwright_executor_dry.py`）
 
 > ⚠️ 注意：本补丁含仓库根级文件（如 `.gitignore`），请确保在仓库根（`/Users/naturist/MusicProject/Shopping-Agent/`）下解压，让 zip 内的文件能落到对应位置。

@@ -40,18 +40,20 @@ def _evaluate_login_signals_py(cookie_str: str, body_text: str) -> dict:
 
     has_login_hint = ("亲，请登录" in body_text) or ("请登录" in body_text)
 
-    has_strong = has_nick or has_token or has_logout
-    if has_strong:
-        is_logged_in = True
-        confidence = "high"
-        # 已命中强信号时不把 body_login_hint 加进 signals
-    elif has_login_hint:
+    # 关键改进：如果页面明确提示"请登录"，则无论 Cookie 如何，都判定为未登录
+    if has_login_hint:
         is_logged_in = False
         confidence = "high"
         signals.append("body_login_hint")
     else:
-        is_logged_in = False
-        confidence = "low"
+        # 只有在没有登录提示的情况下，才信任强信号
+        has_strong = has_nick or has_token or has_logout
+        if has_strong:
+            is_logged_in = True
+            confidence = "high"
+        else:
+            is_logged_in = False
+            confidence = "low"
 
     return {
         "is_logged_in": is_logged_in,
@@ -65,19 +67,15 @@ class LoginSignalLogicTestCase(unittest.TestCase):
     """淘宝登录态判定规则的覆盖测试。"""
 
     def test_tracknick_alone_marks_logged_in(self) -> None:
-        """仅有 tracknick 也能判定为已登录（淘宝当前版本主力 SSO cookie）。"""
+        """仅有 tracknick 且无登录提示 也能判定为已登录。"""
 
         result = _evaluate_login_signals_py(
             cookie_str="cna=abc; tracknick=naturist; xlly_s=1",
-            body_text="淘宝首页 我的淘宝 已买到的宝贝 亲，请登录 免费注册",
+            body_text="淘宝首页 我的淘宝 已买到的宝贝",
         )
         self.assertTrue(result["is_logged_in"])
         self.assertEqual(result["confidence"], "high")
         self.assertIn("cookie_nick", result["signals"])
-        # 关键：强信号命中后，body_login_hint 不应进 signals
-        self.assertNotIn("body_login_hint", result["signals"])
-        # 但 has_login_hint 仍然是 true（用于调试）
-        self.assertTrue(result["has_login_hint"])
 
     def test_lgc_alone_marks_logged_in(self) -> None:
         """仅有 lgc 也能判定为已登录。"""
@@ -139,11 +137,10 @@ class LoginSignalLogicTestCase(unittest.TestCase):
         self.assertEqual(result["confidence"], "low")
 
     def test_real_world_logged_in_artifact_2026_05_30(self) -> None:
-        """回归测试：用 2026-05-30 用户实机回传的 artifact 反推 cookie 字符串，确认判定正确。
+        """回归测试：验证 2026-05-30 用户实机回传的-即便有 SSO Cookie-但只要含登录 hint 就应判定为未登录。
 
         当时 cookie_keys 含 tracknick / lgc / dnk / aui / _tb_token_，且 body 含"亲，请登录"。
-        旧逻辑会同时把 cookie_nick 和 body_login_hint 都加进 signals 让用户困惑。
-        新逻辑下应只输出 cookie_nick + cookie_token，不输出 body_login_hint。
+        此状态下不应判定为已登录，以防止 open_login_window 过早关闭。
         """
 
         cookie_str = "; ".join([
@@ -157,12 +154,9 @@ class LoginSignalLogicTestCase(unittest.TestCase):
         ])
         body_text = "中国大陆 亲，请登录 免费注册 网页无障碍 切换企业版 已买到的宝贝 我的淘宝"
         result = _evaluate_login_signals_py(cookie_str=cookie_str, body_text=body_text)
-        self.assertTrue(result["is_logged_in"])
+        self.assertFalse(result["is_logged_in"])
         self.assertEqual(result["confidence"], "high")
-        # 应该只有强信号，没有 body_login_hint
-        self.assertIn("cookie_nick", result["signals"])
-        self.assertIn("cookie_token", result["signals"])
-        self.assertNotIn("body_login_hint", result["signals"])
+        self.assertIn("body_login_hint", result["signals"])
 
     def test_logout_text_alone_marks_logged_in(self) -> None:
         """body 含"退出"字样也算登录（某些场景 Cookie 还没加载，但 DOM 渲染好了）。"""

@@ -271,21 +271,29 @@ class TaobaoPlaywrightExecutor(ShoppingExecutor):
             # ===== 第二步：跳到登录页让淘宝弹出二维码 =====
             page.goto("https://login.taobao.com", wait_until="domcontentloaded", timeout=60_000)
 
-            # ===== 第三步：轮询等待 URL 离开 login.taobao.com（说明登录成功） =====
+            # ===== 第三步：轮询等待 登录态确认（不再单纯依赖 URL 跳转） =====
             poll_interval_seconds = 3
             detected_at = None
             total_waited = 0
             while total_waited < keep_open_seconds:
                 page.wait_for_timeout(poll_interval_seconds * 1000)
                 total_waited += poll_interval_seconds
+                
+                # 使用登录态判定函数进行确认
+                status = self._extract_login_status(page)
+                if status.get("is_logged_in") and status.get("confidence") == "high":
+                    detected_at = total_waited
+                    break
+                
+                # 调试：若在 login 页面停留太久，可通过打印或 artifact 记录
                 try:
                     current_url = page.url
                 except Exception:
                     current_url = ""
-                # 登录成功后淘宝会跳到 www.taobao.com 或 i.taobao.com
                 if current_url and "login.taobao.com" not in current_url:
-                    detected_at = total_waited
-                    break
+                    # URL 已经跳走了但登录态还没 high，说明处于加载/同步期
+                    # 继续轮询，直到 _extract_login_status 返回 high-confidence True
+                    pass
 
             # ===== 第四步：登录后显式 goto 到 my_taobao 触发 Cookie 完整写入 =====
             if detected_at is not None:
@@ -680,26 +688,29 @@ class TaobaoPlaywrightExecutor(ShoppingExecutor):
   if (hasLogoutText) signals.push('body_logout_text');
 
   // 弱信号 / 反向信号判定
-  // 注意：淘宝首页 DOM 里**永远**有一个隐藏的"亲，请登录"链接（即便已登录），
-  // 所以 body_login_hint 单独存在不一定意味着未登录；只有在强信号都没命中时才有判定价值。
+  // 关键改进：如果页面明确提示"请登录"，则无论 Cookie 如何，都判定为未登录
+  // 原因：实机联调发现，即便有 SSO Cookie，若页面显示"请登录"， session 仍未生效或已过期
   const hasLoginHint = bodyText.includes('亲，请登录') || bodyText.includes('请登录');
 
-  // 综合判定（强信号优先；强信号命中后 body_login_hint 不进 signals 列表，避免误导）
+  // 综合判定
   let isLoggedIn = false;
   let confidence = 'unknown';
-  const hasAnyStrongSignal = hasNickCookie || hasTokenCookie || hasLogoutText;
-  if (hasAnyStrongSignal) {
-    isLoggedIn = true;
-    confidence = 'high';
-    // 不把 body_login_hint 放进 signals，避免与强信号混在一起显得矛盾
-  } else if (hasLoginHint) {
+
+  if (hasLoginHint) {
     isLoggedIn = false;
     confidence = 'high';
     signals.push('body_login_hint');
   } else {
-    // 既无强信号、又无 hint，可能页面还没加载完
-    isLoggedIn = false;
-    confidence = 'low';
+    // 只有在没有登录提示的情况下，才信任强信号
+    const hasAnyStrongSignal = hasNickCookie || hasTokenCookie || hasLogoutText;
+    if (hasAnyStrongSignal) {
+      isLoggedIn = true;
+      confidence = 'high';
+    } else {
+      // 既无强信号、又无 hint，可能页面还没加载完
+      isLoggedIn = false;
+      confidence = 'low';
+    }
   }
 
   // 昵称候选（仅人工核对用，不参与判定）
