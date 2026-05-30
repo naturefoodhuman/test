@@ -1,17 +1,45 @@
 {
-  "is_logged_in": false,
-  "body_preview": "中国大陆  亲，请登录 免费注册 网页无障碍 切换企业版 选择主题  已买到的宝贝 我的淘宝   购物车  收藏夹  免费开店  千牛卖家中心  帮助中心  距结束 时 分 秒 淘宝网 宝贝 天猫 店铺 搜索 专业窗户 洗烘一体机 国家补贴 三筒洗衣机阳台柜 305元消费券 618抢先购冲刺24小时 抢650元苹果惊喜券 抢大额运动户外券 端午节好礼 定制上门安装窗户 不锈钢波纹",
-  "nickname_candidates": [
-    "中国大陆 ",
-    "中国大陆",
-    "",
-    "",
-    "亲，请登录 免费注册",
-    "亲，请登录 免费注册",
-    "亲，请登录",
-    "免费注册",
-    "网页无障碍",
-    "网页无障碍"
+  "is_logged_in": true,
+  "confidence": "high",
+  "signals": [
+    "cookie_nick"
   ],
-  "login_hint_present": true
+  "login_hint_present": false,
+  "nickname_candidates": [
+    "网站无障碍",
+    "忘记密码",
+    "忘记密码",
+    "忘记密码",
+    "忘记账号",
+    "*",
+    "隐私权政策",
+    "法律声明",
+    "支付宝及客户端服务协议",
+    "—点击左上角扫一扫"
+  ],
+  "cookie_keys": [
+    "mtop_partitioned_detect",
+    "_m_h5_tk",
+    "_m_h5_tk_enc",
+    "xlly_s",
+    "cna",
+    "t",
+    "thw",
+    "arms_uid",
+    "lgc",
+    "dnk",
+    "tracknick",
+    "lid",
+    "aui",
+    "_cc_",
+    "_tb_token_",
+    "sca",
+    "uc1",
+    "isg",
+    "x5secdata",
+    "3PcFlag",
+    "tfstk"
+  ],
+  "url": "https://login.taobao.com/havanaone/login/login.htm?bizName=taobao&redirectURL=https%3A%2F%2Fi.taobao.com%2Fmy_itaobao",
+  "body_preview": "网站无障碍  \"登录页面\"改进建议 密码登录短信登录 忘记密码 登录 忘记账号 免费注册 * 已阅读并同意以下协议淘宝平台服务协议、隐私权政策、法律声明、支付宝及客户端服务协议 手机扫码登录 打开 淘宝APP—点击左上角扫一扫 怎么扫码登录?"
 }
