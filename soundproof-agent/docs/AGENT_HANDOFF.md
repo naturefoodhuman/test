@@ -319,6 +319,64 @@ PYTHONPATH=src python3 -m unittest discover -s tests -v
 
 ---
 
+## 15. 本轮开发记录（2026-05-30 第五次 — 登录态判定优化 + 文件头规范升级）
+
+### Agent 身份
+Claude Sonnet 4.5（via Arena.ai Agent Mode）。
+
+### 动机
+1. 用户第二次实机回传 artifact 显示**已登录成功**（cookie 含 `tracknick/lgc/dnk/_tb_token_`），但旧逻辑让 CLI 输出 `_nk_=False unb=False`，让用户以为没登录；signals 列表同时含 cookie_nick + body_login_hint 让人困惑。
+2. 用户报告"扫码后必须手动刷新一下才更新登录态" → race condition。
+3. 用户提出 3 个新要求：文件头注释写具体大模型名 / `.gitignore` / 选 push 方案 B。
+
+### 落地动作
+- **`_extract_login_status` 重写 SSO cookie 候选**：nick 类 `[tracknick, _nk_, lgc, dnk, lid]`，token 类 `[_tb_token_, unb, aui, sgcookie]`；强信号命中时不再把 `body_login_hint` 加进 signals。
+- **`check_login_status` 加 reload 重试**：首次判定不是 high confidence 时再 reload 一次重读，解决 race condition。
+- **`_summarize_login_status` 重写**：直接列实际命中的 SSO cookie 候选。
+- **新增 `tests/test_login_signal_logic.py`**（10 项）：Python 镜像 + JS↔Python 一致性校验 + 用真实 artifact 反推的回归测试。这填补了第四轮 dry-run 漏检 JS 逻辑的盲区。
+- **新增 `test/.gitignore`**：完整忽略列表 + 关键例外。
+- **文件头规范升级**：写进 `ONBOARDING_CHECKLIST.md` 第 7 步 + V1 需求文档 §8.4。
+
+### 测试状态
+103/103 通过（93 → 103）。
+
+### 用户判定
+**已登录成功**。下一步直接进联调清单 §3 探针。
+
+### 给下一位 Agent 的强提示
+1. **文件头注释必须写具体大模型名**（如 `Claude Sonnet 4.5 (via Arena.ai Agent Mode)` / `GPT-5 Pro (via Arena.ai Agent Mode)`），**不能只写 "Arena.ai Agent Mode"**——这是用户硬性要求。修改文件时还要追加"修改记录"小段（最新在最上）。
+2. **任何登录判定规则的改动**必须同步改 `tests/test_login_signal_logic.py` 的 Python 镜像，否则 `test_js_and_python_cookie_lists_match` 会失败。
+3. **push 流程**：用户选 B 方案。Agent 每轮打 zip 补丁（ADR-013），用户应用后 `git add . && git commit && git push`。`.gitignore` 已就位，不用担心 runtime/ 被推上去。
+4. **dry-run 测试的局限**：FakePage 的 `login_payload` 是直接返回 dict，绕过了 JS 判定逻辑。新增"页面文本判定"类功能必须额外加规则层单测（参考 `test_login_signal_logic.py` 的写法）。
+
+---
+
+## 14. 本轮开发记录（2026-05-30 第四次 — 首次实机 bug 修复轮）
+
+### 动机
+用户在 Mac 上做联调，扫码登录后 `check-login` 仍报未登录。回传 artifact 分析发现两个 bug：
+1. `_extract_login_status` 判定逻辑对淘宝首页 DOM 不可靠（"我的淘宝/已买到的宝贝"在未登录态也会出现）；
+2. `open_login_window` 仅打开首页等待，不会跳转到登录页让淘宝弹二维码 → 用户实际扫的码可能在另一个浏览器，对当前 Chromium profile 无效。
+
+### 落地动作
+- **重写 `_extract_login_status`**：改用 `_nk_` / `unb` cookie + body "退出"文本作为强信号；返回新字段 `confidence` / `signals` / `cookie_keys` / `url`。
+- **重写 `open_login_window`**：先 goto 首页拿 before，再跳到 `login.taobao.com` 让淘宝弹二维码 → 轮询 URL 检测登录跳转 → 显式 goto my_taobao 强制 cookie 写入 → 回首页拿 after。返回新字段 `login_detected_at_seconds` / `login_flow`。
+- **CLI 输出人类友好摘要**：`check-login` / `open-login-window` 显示 ✅/❌、confidence、命中信号、sso Cookie 状态。
+- **新增 dry-run 测试**：`test_open_login_window_already_logged_in_returns_short_circuit` + `test_open_login_window_times_out_when_not_logged_in`，`_FakePage` 增加 `url` 属性支持轮询测试。
+- **联调清单 §2 大改**：详细新流程 + 4 种异常排查表。
+
+### 测试状态
+93/93 通过（91 → 93）。
+
+### 关键教训
+**dry-run 测试通过 ≠ 真实环境通过**。FakePage 的 `login_payload` 是直接返回 dict，绕过了 `_extract_login_status` 内部的 JS 判定逻辑，所以即便 JS 判定逻辑有 bug，dry-run 测试也是通过的。下次新增"页面文本判定"类功能时，要 mock 到 `page.evaluate` 的 JS 执行层（甚至用 mini DOM 库执行 JS），才能暴露逻辑层 bug。
+
+### 给下一位 Agent / 用户的下一步
+- 用户：删 `runtime/browser_profiles/taobao/` 后重做联调清单 §2，回传 artifact 验证。
+- 下轮若用户登录成功，立刻推进探针 → search-once → live-demo（继续按清单执行）。
+
+---
+
 ## 13. 本轮开发记录（2026-05-30 第三次 — Phase 1A 收尾轮）
 
 ### 动机

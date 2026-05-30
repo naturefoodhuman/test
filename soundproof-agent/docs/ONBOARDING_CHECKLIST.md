@@ -97,7 +97,22 @@ PYTHONPATH=src python3 -m unittest discover -s tests -v
    不触发时不用动这两个文件。
 5. [ ] 用户答复了开放问题？把对应 OQ-XXX 从 `OPEN_QUESTIONS.md` 的"open"挪到"closed"，并在 `DECISIONS.md` 新增 ADR-XXX。用户提了新待澄清点？在 OQ 列表新增条目。
 6. [ ] 跑一遍测试 (`PYTHONPATH=src python3 -m unittest discover -s tests -v`)，把"通过 N 项"写进文档。
-7. [ ] 新文件/改文件头部加 `<!-- 创建该文件的LLM大模型名称 / 创建时间（北京时间，精确到秒） -->` 注释（沿用项目规范）。
+7. [ ] **文件头注释规范（2026-05-30 第五次升级，用户硬性要求）**：
+   - **新增**文件头部加：
+     ```
+     # 创建该文件的LLM大模型：<具体大模型名，如 Claude Sonnet 4.5 (via Arena.ai Agent Mode)、GPT-5 Pro 等>
+     # 创建时间（北京时间，精确到秒）：YYYY-MM-DD HH:MM:SS CST
+     ```
+   - **修改**已有文件时加：
+     ```
+     # 修改该文件的LLM大模型：<具体大模型名>
+     # 最后修改时间（北京时间，精确到秒）：YYYY-MM-DD HH:MM:SS CST
+     #
+     # 修改记录：
+     # - 2026-XX-XX HH:MM <大模型名>: <简要描述这一次改了什么>
+     ```
+   - **关键**：必须写**具体大模型名**（如 "Claude Sonnet 4.5 (via Arena.ai Agent Mode)"、"GPT-5 Pro (via Arena.ai Agent Mode)"），**不能**只写笼统的 "Arena.ai Agent Mode"，否则无法追溯责任。
+   - md / yaml / 其他注释格式同理（用 `<!-- -->` 或 `#`）。
 8. [ ] **实机测试期专属**（ADR-013）：用户首次在 Mac 上执行 `open-login-window` 之后，每轮若改了项目文件，必须运行：
    ```bash
    python3 scripts/make_patch.py --auto --desc "本轮简短描述"

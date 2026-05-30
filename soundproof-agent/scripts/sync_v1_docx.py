@@ -1,6 +1,9 @@
-# 创建该文件的LLM大模型名称：Arena.ai Agent Mode
-# 创建时间（北京时间，精确到秒）：2026-05-30 11:55:00 CST
-# 最后更新（北京时间，精确到秒）：2026-05-30 13:35:00 CST
+# 创建该文件的LLM大模型：Arena.ai Agent Mode（早期版本）
+# 修改该文件的LLM大模型：Claude Sonnet 4.5 (via Arena.ai Agent Mode)
+# 最后修改时间（北京时间，精确到秒）：2026-05-30 17:30:00 CST
+#
+# 修改记录：
+# - 2026-05-30 17:30 Claude Sonnet 4.5: 给 §8.4 锚点对应的现状段加上文件头规范新规则的同步内容
 """
 把"V1 实际实现现状"子段原地插入到项目需求文档 V1 的 docx。
 
@@ -218,6 +221,19 @@ ANCHOR_BLOCKS: List[Tuple[str, List[str]]] = [
             "【V1 实际实现现状（2026-05-30 同步）】",
             "🔁 Claude Code 已被 ADR-001 移除。其余目标环境保持。",
             "✅ uv 已使用（见 pyproject.toml）。",
+        ],
+    ),
+    # --- §8.4 代码质量标准 之后（2026-05-30 第五次新增锚点） ---
+    (
+        "统一日志：logging模块，同时输出控制台与文件，异常必须记录完整堆栈",
+        [
+            "【V1 实际实现现状（2026-05-30 第五次同步）— 代码质量标准】",
+            "✅ 文件头部注释规范在所有新文件中遵守（见 docs/ONBOARDING_CHECKLIST.md 第 7 步）。",
+            "✅ 2026-05-30 第五次升级文件头规范（用户硬性要求）：必须写具体大模型名（如 Claude Sonnet 4.5 (via Arena.ai Agent Mode) / GPT-5 Pro (via Arena.ai Agent Mode) / Gemini 2.5 Pro (via Arena.ai Agent Mode) 等），不能只写笼统的 \"Arena.ai Agent Mode\"，否则无法追溯责任。",
+            "✅ 新增文件用：# 创建该文件的LLM大模型：<名> / # 创建时间（北京时间，精确到秒）：YYYY-MM-DD HH:MM:SS CST。",
+            "✅ 修改文件用：# 修改该文件的LLM大模型：<名> / # 最后修改时间... 并维护「修改记录」小段（最新在最上）。",
+            "✅ 类型注解 / 中文 docstring / 抽象接口（ShoppingExecutorInterface）。",
+            "🟡 统一日志：基础 logging 已用，未做完整双输出 + 滚动配置。",
         ],
     ),
     # --- §8.3 技术选型 之后 ---

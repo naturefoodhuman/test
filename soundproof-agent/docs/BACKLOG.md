@@ -26,17 +26,17 @@
 - [x] **P1 项 6**：`docs/phase1_real_test_checklist.md` 打磨 → 扩成 10 节版本：环境准备 / 登录态 / 探针先行 / 真实搜索 / 真实详情 / 真实完整链路 / 风控处理 / artifact 回传 / 补丁应用 / 联调通过判据。
 - [x] **P1 项 7**：`scripts/make_patch.py` 与补丁机制（ADR-013）→ 已上轮实装。
 
-### P0.5：联调首轮（需用户在 Mac 上配合）
+### P0.5：联调首轮进度（2026-05-30 第五次更新）
 
-- [ ] 用户：`pip3 install playwright && python -m playwright install chromium`
-- [ ] 用户：`uv run python src/phase1_cli.py open-login-window --keep-open-seconds 240`，扫码登录
-- [ ] 用户：跑探针 `probe-search-query` / `probe-detail-url`
+- [x] 用户：`pip3 install playwright && python -m playwright install chromium` ✅
+- [x] 用户：`uv run python src/phase1_cli.py open-login-window --keep-open-seconds 240`，扫码登录 ✅ **已登录成功**（2026-05-30 第二次回传 artifact 显示 `is_logged_in: true`，cookie 含 tracknick / lgc / dnk / _tb_token_ 等 SSO cookie）
+- [ ] 用户：跑探针 `probe-search-query` / `probe-detail-url` ← **下一步**
 - [ ] 用户：跑真实 `search-once` / `detail-once` / `live-demo`
 - [ ] 用户：把 `runtime/artifacts/<run_id>/` 与终端输出回传 Agent
 - [ ] Agent：根据真实页面修正 `selector_profiles.py` / `extraction_utils.py` / `filtering.py`
-- [ ] Agent：每次修正打包 zip 补丁（ADR-013）
+- [x] Agent：每次修正打包 zip 补丁（ADR-013）✅ 已建立流程
 
-> **状态**：所有 ADR-008 4 项判据已满足（详见 CHANGELOG 2026-05-30 第三次条目）。Agent 正式通知用户：**可以开始 OQ-001 真实联调流程**了。详细步骤见 `docs/phase1_real_test_checklist.md`。
+> **当前状态**：用户已登录成功。第五次补丁修了两个 UX bug（登录态判定 signals 混淆 + CLI 摘要 cookie 候选不全）+ 加了 reload 重试 + 新增 `.gitignore` + 升级文件头规范。下一步推进**探针阶段**。
 
 ### P0.5：联调首轮（需用户在 Mac 上配合）
 

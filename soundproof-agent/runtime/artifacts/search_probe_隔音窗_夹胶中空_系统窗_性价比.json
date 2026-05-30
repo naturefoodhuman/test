@@ -1,0 +1,101 @@
+{
+  "query": "隔音窗 夹胶中空 系统窗 性价比",
+  "search_url": "https://s.taobao.com/search?q=%E9%9A%94%E9%9F%B3%E7%AA%97+%E5%A4%B9%E8%83%B6%E4%B8%AD%E7%A9%BA+%E7%B3%BB%E7%BB%9F%E7%AA%97+%E6%80%A7%E4%BB%B7%E6%AF%94",
+  "risk": {
+    "detected": true,
+    "risk_type": "login_required",
+    "signals": [
+      "亲，请登录"
+    ],
+    "preview": "中国大陆  亲，请登录 免费注册 网页无障碍 淘宝网首页 已买到的宝贝 我的淘宝   购物车  收藏夹  免费开店  千牛卖家中心  帮助中心  搜索 搜同款 所有宝贝 天猫 淘宝 店铺 企业购 发货地 1 /100 综合 销量 价格 区间 淘金币抵钱 包邮 开票服务 退货宝 公益宝贝 筛选 上海南京杭州临街卧室加装隔音窗新春特价三层加强四层夹胶玻璃 内开 塑钢 夹层玻璃 ¥ 807 券后价 100+人付款 上海 官方立减15% 包邮 公益宝贝 8年老店 上海君悠隔音装饰工程公司 高架马路车流噪音大,就装隔音窗,签合同保证效果 内开 塑钢 隔音玻璃 ¥ 85 券后价 60人付款"
+  },
+  "selector_counts": [
+    {
+      "selector": "div[class*=\"Card\"]",
+      "count": 62
+    },
+    {
+      "selector": "div[class*=\"doubleCard\"]",
+      "count": 50
+    },
+    {
+      "selector": "div[data-index]",
+      "count": 1
+    },
+    {
+      "selector": "div[class*=\"item\"]",
+      "count": 8
+    },
+    {
+      "selector": "div[class*=\"pic\"]",
+      "count": 1
+    },
+    {
+      "selector": "div[class*=\"info\"]",
+      "count": 0
+    },
+    {
+      "selector": "li[class*=\"item\"]",
+      "count": 16
+    },
+    {
+      "selector": ".item",
+      "count": 1
+    },
+    {
+      "selector": "[data-item-id]",
+      "count": 0
+    }
+  ],
+  "records_preview": [
+    {
+      "title": "上海南京杭州临街卧室加装隔音窗新春特价三层加强四层夹胶玻璃 内开 塑钢 夹层玻璃 ¥ 807 券后价 100+人付款 上海",
+      "detail_url": "https://click.simba.taobao.com/cc_im?p=%B8%F4%D2%F4%B4%B0%20%BC%D0%BD%BA%D6%D0%BF%D5%20%CF%B5%CD%B3%B4%B0%20%D0%D4%BC%DB%B1%C8&s=1446342254&k=2349&e=iIWjzNAG5jNaK3AeP2IWj7meUd0jK%2FPC4KZbXucIHXzAaPKAhx7HkGAKQ%2FzTQNT11YNmaOKp%2BOwrYLJpLTFv0fppovUsTiWOY%2BXMUiQsCABTQ4Ym6p3OtBJIhKWOq%2Fhkd4cyLA9urCSH7UCLM5YrVPvqDHyDtFwps1DtCDfIA%2FEUPGVzXWJK2QnyER%2FTde%2B%2B332Y88TNQqQ6qw5v9g7VNhDmmqEA3nkQMEfKfG85AG0Zc30tifqloXNRd2magEZEROULtdJjUNsJTPp96a6s8eAFPCT26mgo5eyxsVFwHaf7Tsyzhbj7oM1EN86001kR7%2FXWmNgTn6tz%2FnBsfhPsdzxUnPA0sjBCxTEjZBABTwBiwweVtmAaPwdvj0y8pDaLrb%2Fe%2FnF3pl0Yt%2F%2BFIlGANRYIRDJCcCBZMweI96cm%2FOLuAkPPUBluZYRVcFuMSV3XOT%2B5fTNq1x3HaFjyOV1rtgoxVboX%2FZHOF0EsdbkhXSJQ7jsJvbRmYRr0cRLIyTEu2dBE742Uc4a6m9Z8%2FJvwRyPGS9g28PQq%2BBdyMPwXmo5e3bE83P0maBifDiINWTbnAhjIaeKtwuhirVaX5lyuGlC0j7yjgvoHSmW7QaRq6ganhwqeTGLVfq1m9P5e4TxOikIsGTSZvHn2fEdxHEcFSxGlL2tz8Jp22WQ94EV%2FTMrbAFIW5CxtdKbSnezg4g4CKyVNgkUG2ZLXbKRDqmFsHMVeUJXI2R3HlGZrlbTJSj4ex%2FzwV8C83SUMSuWW4YnDemE6LX0iTUTcm%2BXNv2nwFlIL8i11bzeumizRQvAbL05KJICzUsbcAC5KySvTdDtzqbfHKE9TJ966iD85somH1VfPAS%2Bje8AtpP%2FZFw1Thp5o%2FT2K9lNz6jjNFkoGg5OqAW17w%2BuVdpDhIMKRNSGQFyKLOwokW4LV8sD7S5i5m0%2FIcPei%2BMHLwtCysvBw4yeFP77UnR20o1uoEVFNONRd27S4HlHwzRJ%2BjLfqkC0WEbqs%2BHKJPgF%2BCsBLl4EYnlgCYzxsIXzsrX1wnEXhRv9NNb0hR90BW%2FnioUz2WanTn8ZA0WJJ9kwHh9bbwCqjLxZoW0oLUWvDEVGKH27k9PizyK1fRwl%2Fq6GKwAbYZ1Hvhkg%2BJYa6WaillYiUAGMhwD68T4ERAK3CL2YSdwSICOqpPEQCk3VPC8WNlGZrlbTJSj7zlYyDNMroDsnlnteYMlch5xh1xk3LgyhLzNe4KOviaWC5xP4yvvoDDcKWubNDqyrPjLKSKvIRnjOv%2FJ4fev4JR5mIWyw1J1Ek9XyDXGsWQlC0j7yjgvoHJM%2Bj5RCpBbpaLuyrmp2GZ61m9P5e4TxOIqzOXLXt3mZSC%2FItdW83rqx6IuHbDxLB1Pv%2BwdPbMZT%2BcofJ0U%2FGWNhLv%2F591xT2yYZocLdYSkCm0p3s4OIOAmyiNSe4mVabcXtaNBfv0uHcJuikKzVexpBjcCVBcPGmpddMbdz%2BQLwTBkVSxBvcKfoPUV6%2FBBC3gg%2FOYPIoqIqUM0cdmrG673qg%2BqkVVGuRDVEv%2F1VcdTgtSlYg3OBLjKiuGo5bzeHfvqMmNgXoisATkztLpjG25EVUVM8OJVmmkfeZ0C3Wtb0RbIZ9sPQuSUbBWMKE%2B%2FM8jRh7GG%2Bveb%2BR95nQLda1vSnTN%2FqNO2x9ALSHOfBp4TskYUTzFhvtrVA3wSbZ4UFSv6P5lPUaBU3CvURRnKYjCrbOE6llD2pgZrKs2%2Fx%2BnffG9F2Jonh9%2B7UJWHMSjycEAX66oWEKjB2FZBXZGguwAK1Ia6lDPyt4RN7QgI0r6lEQDWN4Cq9XNYwND8ZPfVaIBF97NoUJvvqvZgZNYg80c7UJWHMSjycELYnUqn5aKjrOZy2xSwiHtb1WFpJfrotxL1sbqimX3TQrJGWCfebQ1dQEzsYl8K04L1sbqimX3TTgaKmZhO7TkWskUtGXEGdqKKIQNPDRtzjBSG0os97jju2VCko81S8vnbuPV6qfwayoXpzB%2FkwRvi%2FGZ8KC2SZspYBi5%2Bvyuly1C%2BHv5BP8LRZjI1rh%2BRXsefqI7Q%2BYX52%2FZ8BpTYEayWU6qXq7llHviSHoNHe9870g31zJ0SaTEYUAysUBQaLoSbsvs%2BJJwBGAQVm8slpKcPAwrmmQA3udNgVhBOFIEsUbnG1mj3wNKld1%2F7Eb1GpNZyDumhmh%2Bmm6Fk41yCATdPoT0OeuAxz0W0x74cxC3lEvSkOQif1Vte1fHzzfyEPInLG5oihXS%2BqR95nQLda1vQKUdOYuEUX0wlznl3K71EPH1Hy8vc%2FsvfUufln7fhXFeIq5p5VjrBkf9HhjupxRq72qwsue90%2FudSzgu0jM5rs%3D&mm_sceneid=1_0_127930715_0&spm=a21n57.1.item.1",
+      "price_text": "",
+      "sales_text": "人付款",
+      "shop_name": "8年老店 上海君悠隔音装饰工程公司"
+    },
+    {
+      "title": "高架马路车流噪音大,就装隔音窗,签合同保证效果 内开 塑钢 隔音玻璃 ¥ 85 券后价 60人付款 上海",
+      "detail_url": "https://click.simba.taobao.com/cc_im?p=%B8%F4%D2%F4%B4%B0%20%BC%D0%BD%BA%D6%D0%BF%D5%20%CF%B5%CD%B3%B4%B0%20%D0%D4%BC%DB%B1%C8&s=1446342254&k=2125&e=5WfpMA%2FtjzdaK3AeP2IWj7meUd0jK%2FPCq%2BFu%2BTBRMX3LauyRxK5vo9Flsbk%2FxflG1YNmaOKp%2BOwrEAN94SsbVUjoyB%2B60G33yGb3DHxJHaW6vZWgWfKwyDhT5mk9pGSpd4cyLA9urCSH7UCLM5YrVPvqDHyDtFwps1DtCDfIA%2FEUPGVzXWJK2QnyER%2FTde%2B%2B332Y88TNQqQ6qw5v9g7VNhDmmqEA3nkQMEfKfG85AG0Zc30tifqloXNRd2magEZEROULtdJjUNsJTPp96a6s8eAFPCT26mgo5eyxsVFwHaf7Tsyzhbj7oM1EN86001kR7%2FXWmNgTn6tz%2FnBsfhPsdzxUnPA0sjBCxTEjZBABTwBiwweVtmAaPwdvj0y8pDaLrb%2Fe%2FnF3pl0Yt%2F%2BFIlGANRYIRDJCcCBZMweI96cm%2FOLuAkPPUBluZYRVcFuMSV3XOT%2B5fTNq1x3HaFjyOV1rtgoxVboX%2FZHOF0EsdbkhXSIphHMuxzbFcdbJR7mHq4BhwUXb8MF9z3e33WtXJ%2FerbEad1fUPsxKyZwpSvoQFl9V0ySzUJhsFSvjU6UnDUyp%2FZ4o9mkdWOpNur9TQX%2FQPeALnjdK0Q%2FBTEyvX6g%2B%2BcNRkgdqp8oMolZaBWIOmgIvCLw%2FOK8%2BjTFbYOSf4N%2FBJjEiOQaQIUBE6W4kjmTf9yaxaAu5%2BXb%2BrUXd%2Bi1ozMWUklDYmCQne2pdSZraH%2FSVwppZH1DjHDXuXyPp0NNHpyRR4spLrDOV9K0J0RwbLqjr2XYCSBZAf4kat003mCSP2RPg%2FuNDFTT5QcgaOaqSJNyIb71uaWW3fKYu9mmc4GmIrqaj2iExE5qytyqhFo1CMDbCg09qTBtSR3Iwm%2FtIlG7XfFpU0mWsVlNyLP%2FM8ddDwLi7QpbyT%2BGAVqZl3d%2F2bjlJAhKqYS9BAOgPPUBygXGpXE%2FHwASXby2M8bCF87K19cJxF4Ub%2FTTW9IUfdAVv54h4WwiVzOGNCQNFiSfZMB4fW28Aqoy8WaFtKC1FrwxFRih9u5PT4s8itX0cJf6uhisAG2GdR74ZIPiWGulmopZWIlABjIcA%2BvBTcaWPJ11PtEncEiAjqqTzWP0ysX718B6bL%2F4nbWOIr85WMgzTK6A6UBs3dQwwTCOcYdcZNy4MoP2Cvd%2B3HlHcM%2BH3Z1bevx91Shi8jTqzuA2FRreTIC4L1jLpUqRmJK26v1NBf9A94Y6B%2FIQ0okAAVU0tPjfp5YVeg9J6EiGpiQyYFGqjGgvohGL%2FMBKo7Jppr8y4yV5WkSXtAAA9g8K89ACVHcgUDLcFfq%2BE1GMpYByrEq5xz1H6xrEDiZ5qT74etmV4F2pxETPveLUshVrSG%2FInGTJrIWK7Z9HJ%2BVcmX4wYoS1Re6uj3gJM%2Fqa6bxfHRQR5mPO6Fik2TF9WNPBrymwdjV3Jz5UkuK0PDfdmujwy6k3sp3uJaFjvR7960VvKbB2NXcnPl572S8RhVZ746QhYAwxkgazYgOSZG1%2FLPUUGgIQvsj8bGmfPyLGyoE0nXouKUzPggqPWFr3rrIUlokse1sQXtF7iqkjRoZZbcfXxZWldsoQldLpU4H%2BFyk%2Bg5dTjGlkLUAFNx4eflhp1BakFX2sGhMpMKmFPaJ522v4nHazJFIuMCySSlCebPrOsrSZ5NlqyXVHernC9wfr62eu2dVUpqsciA%2FUElrkKu5JE1r6ZrHKJijE%2Fi3%2BMdJSrpil4I1fz4dRHsImAGT634gq84B68IgnqXaINNR7CGTymUvImLCnVJAytDTmsJ8eUya1Q61e%2B%2BHToXaCMfaBIxs%2Fb3aCgpoXxHxkQPTfr0%2BsC7HO0A8rBM%2Fgw4qCQyU758h%2BgfXjUIEJmhJloWZ5xmvXvUAZusCtT7%2FsHT2zGUhVvQ8XNxIFS5k%2BqPrB0MMuNrFJ1bbmttYircX6xA%2B16v%2F6TvC3oyyZg0GqgNiOzjzaR%2Bj2qU58rypfaNiWGuBlfPAS%2Bje8AtKPtJe75Y71I8CSxIE1QrtToN7ErlpsPtvMPrUBMt65uPtF85lDYdMnmbhLobzsAf%2BGzOpeop2nMEL19I6XGf%2FtWLJryAkJrMYCH8le4j28vIVSimecFv%2FlZUa0GWJZIVx%2B6nS198%2FdU%3D&mm_sceneid=1_0_124019026_0&spm=a21n57.1.item.2",
+      "price_text": "",
+      "sales_text": "人付款",
+      "shop_name": "9年老店 宁逸隔音门窗企业店"
+    },
+    {
+      "title": "窗户隔音自装加装降噪双层三层 PVB夹胶 夹层玻璃 塑钢 内开内倒 ¥ 85 券后价 200+人付款 浙江 杭州",
+      "detail_url": "https://click.simba.taobao.com/cc_im?p=%B8%F4%D2%F4%B4%B0%20%BC%D0%BD%BA%D6%D0%BF%D5%20%CF%B5%CD%B3%B4%B0%20%D0%D4%BC%DB%B1%C8&s=1446342254&k=2137&e=9lApsXEbrnlaK3AeP2IWj7meUd0jK%2FPCq%2BFu%2BTBRMX3LauyRxK5vo9Flsbk%2FxflG1YNmaOKp%2BOzMmIyDd6N%2BMU1lJ1N3vVkOsaFGD7I7441TQ4Ym6p3OtDhT5mk9pGSpd4cyLA9urCSH7UCLM5YrVPvqDHyDtFwps1DtCDfIA%2FEUPGVzXWJK2QnyER%2FTde%2B%2B332Y88TNQqQ6qw5v9g7VNhDmmqEA3nkQMEfKfG85AG0Zc30tifqloXNRd2magEZEROULtdJjUNsJTPp96a6s8eAFPCT26mgo5eyxsVFwHaf7Tsyzhbj7oM1EN86001kR7%2FXWmNgTn6tz%2FnBsfhPsdzxUnPA0sjBCxTEjZBABTwBiwweVtmAaPwdvj0y8pDaLrb%2Fe%2FnF3pl0Yt%2F%2BFIlGANRYIRDJCcCBZMweI96cm%2FOLuAkPPUBluZYRVcFuMSV3XOT%2B5fTNq1x3HaFjyOV1rtgoxVboX%2FZHOF0EsdbkhXSJQ7jsJvbRmYRr0cRLIyTEu2dBE742Uc4a6m9Z8%2FJvwRyPGS9g28PQq%2BBdyMPwXmo58p9cBqGGxvwOkZCrnZWHDFaLZ3lNFPdaroTYFtueLAfeuH2sS%2BTIWDBl27VhOEDiHMzqbNHMHxmKrE80I%2B4Fdi1fqXwXqVCfY2HNZLaa5FN0zMn2HEhWTHglOaImp1pHnQJm938hCshHyJdk4LPLC12ykQ6phbBy3KKjG3WFZwzByxyIaFPeaZwGg9Ms8V5I3b4D2ULwpBczDF31WHXvq2qYHuP34JUps%2BM6xuBHk7JOKvEodsJzF3LWwukiZouOtmDymAx9I6kqSiSk1HwucK9bATbNMNIKDs%2Fz%2FHdnVbWqY93EZuGrjx%2B4Sl5RacfmGDZrHWzzZD9yMJv7SJRu1b9ATT3hscVCQujbgOzYe3S4u0KW8k%2FhguiJGq3y2%2FqTo8TrWZO7JLbonKlwIl8hXVxPx8AEl28tjPGwhfOytfXCcReFG%2F001vSFH3QFb%2BeKhTPZZqdOfxkDRYkn2TAeH1tvAKqMvFmhbSgtRa8MRUYofbuT0%2BLPIrV9HCX%2BroYrABthnUe%2BGSD4lhrpZqKWViJQAYyHAPrwU3GljyddT7RJ3BIgI6qk84Bm6Mf3CgYJnut6aVsCEBVm4shoWSAbKyIFdGyUQiFlYFv%2BVBOczOv8sfUtdjewq1oRE6E%2FIbNCt0%2BgKYjT1qRwNkAtQLZOmLU6ju8nUx6vxioP7C6SP2Tt2SgavMWKprXs2%2BiUpFQ5fovUC407zdWhwXQmQ6sv7o5iz9vhjPWJlLO1tqDmZUvISe1a9lBppTtUZysYj8CEqQddPenreoZgRb6cQC5As5MBX0R29iDymvTAuSY6KemcaCqREn4yKyFUopnnBb%2F5WVGtBliWSFaYRCf5SOpz1%2Bjy%2F5g9T%2FA7d7WVICk9B23O4tQ8qIkVqVuS1OLjvhP8RbIZ9sPQuSUbBWMKE%2B%2FM8GHGCpwo%2F4wVW5LU4uO%2BE%2FynTN%2FqNO2x9ALSHOfBp4TskYUTzFhvtrVA3wSbZ4UFSv6P5lPUaBU3CvURRnKYjCrbOE6llD2pgtk4UIqPi%2FnZtQdca82fXt7Z67Z1VSmqxfRwU%2BWNZenulEBOzkcJSfGQoUqMMRKaVljR7cHxh%2BPAryIG47f2vSkiXvcrksALBB%2B3VT6c%2FGSCe11TxDazeGdxkECgNiRdWMTUe6RCwyvbCGCP3FKY%2FkEocSNLoOkZ7i5Jaj9CSl1dzm%2FtG885rM%2FhszOz5hJqXq%2BX%2F1IEkDrysECYXTeMGeBDs9kpShjY9fNkrr0Sbj%2FIHB4nidse%2FZQntFQj4BLaWnrIf%2FarQVstr9HbBap1s9McOxv5nYB7rL0TZ8ebeTX46d8gVkCs5Eh%2BbKivEjAs%2F6GP9SIPYNaMxi9qdybGrxTOZe4fVN%2FCpiBRpVC7ncXv15zdozmc2RLqUsDTT4pKzp%2FAGtohRlld2H5OOXC4bTgaKgCuBesZPzyPu339HhH1YqwEn0xTjk548RrHaL59vi%2FlPLqZDXGcdf7jCA4Q6hQOkZCrnZWHDy5w%2BvYgs%2BlLenoP7WzJ3LP7NLBoRU4v%2FCzKM%2FIooTZXZz6hWZ%2BIvLd7XnsFr4KmrIretxTz6ihZStBunutZ6Tw%3D%3D&mm_sceneid=1_0_22816104_0&spm=a21n57.1.item.3",
+      "price_text": "",
+      "sales_text": "人付款",
+      "shop_name": "13年老店 杭州季静隔音玻璃门窗厂家"
+    },
+    {
+      "title": "隔音窗户加装上海江苏浙江苏州卧室静音PVB夹胶三层真空玻璃窗户 内开内倒 塑钢 夹层玻璃 ¥ 85 券后价 100+人付款 江苏 苏州",
+      "detail_url": "https://click.simba.taobao.com/cc_im?p=%B8%F4%D2%F4%B4%B0%20%BC%D0%BD%BA%D6%D0%BF%D5%20%CF%B5%CD%B3%B4%B0%20%D0%D4%BC%DB%B1%C8&s=1446342254&k=2093&e=fgm6VsjezixaK3AeP2IWj7meUd0jK%2FPCq%2BFu%2BTBRMX3LauyRxK5vo9Flsbk%2FxflG1YNmaOKp%2BOxGS1RTuHYYVaAJkeoJA%2BTAvvxDsweWg%2BG6vZWgWfKwyDhT5mk9pGSpd4cyLA9urCSH7UCLM5YrVPvqDHyDtFwps1DtCDfIA%2FEUPGVzXWJK2QnyER%2FTde%2B%2B332Y88TNQqQ6qw5v9g7VNhDmmqEA3nkQMEfKfG85AG0Zc30tifqloXNRd2magEZEROULtdJjUNsJTPp96a6s8eAFPCT26mgo5eyxsVFwHaf7Tsyzhbj7oM1EN86001kR7%2FXWmNgTn6tz%2FnBsfhPsdzxUnPA0sjBCxTEjZBABTwBiwweVtmAaPwdvj0y8pDaLrb%2Fe%2FnF3pl0Yt%2F%2BFIlGANRYIRDJCcCBZMweI96cm%2FOLuAkPPUBluZYRVcFuMSV3XOT%2B5fTNq1x3HaFjyOV1rtgoxVboX%2FZHOF0EsdbkhXSIphHMuxzbFcdbJR7mHq4BhwUXb8MF9z3e33WtXJ%2FerbL91X%2B2jCPdZp32HM0YxmypqoQNhkLRi8ogXPS%2B5o19S3EulXpvxNSge82pXUXL8BMM8uDO41IP66ICeRR%2FNdvuao7rX0%2BrStT%2FVqsx6JRWzLRu2P%2FQMsWKaTbKQ%2BcLTCDv653ApwMqhRXSaW5HefWQS1nuj1ZZ0W2pzFIZrRVeDPNiozVP3InqNy%2FCqiAxCQ%2BUrvory%2BWgMeiGr5g3zxz0LeUvq7KCGfmz4zrG4EeTsC4UmAS80l6Wdwv8wDQR%2FTq2YPKYDH0jqX4IjL31Wpld%2BkFo9AVulmrYJoD9evUchyqnOkWyPU0YaapjuoCs6FTegjT%2FoL%2FSJTWZjXJX4MQ52USm2nf5fXIJcO%2FJ7eJvufUMghXKc6FCaExVm3G%2FL7GoOKNK6TQTObBPSTjo6wUYXmldNb%2BP0ChEYKogkkUzWm2RpZfuzG9UsNKwPPuw1pKGJ8DffUfT3sIBVJX1aR6F0ToUwNHlvm67IcXkoum%2FdWv9fesoJgz%2FsrXs1LE7bTi5cKcfcSE%2Bq%2BdbSsy0nmb6n9CIPsb5Xvassofcr6SPXTn252D%2F2YtMwBhAHdtmOAx4hTYyicnDkZt3d8CkIA%2F7eioZemDd5neuUZ%2F0TCNasDcKWubNDqyrPjLKSKvIRnjOv%2FJ4fev4J%2BzDOQ%2B56iCpG1uqggPBaGr3JM%2FWnLv%2BcaqEDYZC0YvItzTJcqBluCOOcQhGioZZp72KIkuV89ZfqJSZK9FNsPQAwrhletyTff19%2Bo2GTqdqhPsvcGOHDyhIqkf21azkqCRxQSBxOsjsAXwpvFRjKwXMYZN5esPPlIretxTz6iha%2FZq%2Fx8%2BvBgCXlDiTNQOTND2vwQ8kPvsFW6g92VffjdJLZK1LD7QsmT3HxusQ79Y6shIbb%2FIdSOv7jXwn60CmHktkrUsPtCyYRpUTZKDrgIqX3yWkmtmqX4c853dG1Dx6jj1J5EwYFlLBIMl6O6Cjw7Of8kfHaAPmFpnpLhJxwOYUQSdKM%2BytAt0Z3YPsBVXQFurrtGhk%2BTv2ikafA%2FCC3r09RCiGXXvdRnRoSJfcuuaEXlFNaRw1ve1xL3JK5PFbu9s%2FeJU0KjcxfmWnEx5Y16D7IeJYj0nTzOPf8oz9bgNxkECgNiRdWMTUe6RCwyvbCGCP3FKY%2FkK6i4EbHuej%2Fi5Jaj9CSl1dzm%2FtG885rM%2FhszOz5hJqXq%2BX%2F1IEkDrysECYXTeMGeBDs9kpShjY9fNkrr0Sbj%2FIHB4nidse%2FZQntFQj4BLaWnrIf%2FarQVstr9HbBap1s9McOxv5nYB7rL0TZ8ebeTX46d8gVkCs5Eh%2BbKivEjAs%2F6GP9SIPYNaMxi9qdybGrxTOZe4fVN%2FCpiBRpVC7ncXv9Juox%2FkZWRqZtXvn2etRrcutDPMs%2Fy4OYLnNu72YJeAaKgCuBesZP55mX9YfTyNeUG%2Ft1cWGabrAp8a5NV7XC7awrJo1i2aN336QxITg3s%2FZ8MuNasJDw76A3kNOJ5jLJpAo4ZmlA1pPNFpT0LzkIc4Fp9ls96VL3vXHVkbStftwm6KQrNV7GPAZ%2BPKeQx8w%3D&mm_sceneid=1_0_129400968_0&spm=a21n57.1.item.4",
+      "price_text": "3元",
+      "sales_text": "人付款",
+      "shop_name": "8年老店 泸能隔音玻璃门窗厂家"
+    },
+    {
+      "title": "上海杭州隔音窗户加装三四层PVb夹胶隔音玻璃门窗降噪音神器临街 内开 塑钢 隔音玻璃 ¥ 85 券后价 90人付款 浙江 杭州",
+      "detail_url": "https://click.simba.taobao.com/cc_im?p=%B8%F4%D2%F4%B4%B0%20%BC%D0%BD%BA%D6%D0%BF%D5%20%CF%B5%CD%B3%B4%B0%20%D0%D4%BC%DB%B1%C8&s=1446342254&k=2145&e=uIErw6fZzMNaK3AeP2IWj7meUd0jK%2FPCq%2BFu%2BTBRMX3LauyRxK5vo9Flsbk%2FxflG1YNmaOKp%2BOyE8eBN9SK8wTdpNaX4wOgPmCSnUcQvqhy6vZWgWfKwyDhT5mk9pGSpd4cyLA9urCSH7UCLM5YrVPvqDHyDtFwps1DtCDfIA%2FEUPGVzXWJK2QnyER%2FTde%2B%2B332Y88TNQqQ6qw5v9g7VNhDmmqEA3nkQMEfKfG85AG0Zc30tifqloXNRd2magEZEROULtdJjUNsJTPp96a6s8eAFPCT26mgo5eyxsVFwHaf7Tsyzhbj7oM1EN86001kR7%2FXWmNgTn6tz%2FnBsfhPsdzxUnPA0sjBCxTEjZBABTwBiwweVtmAaPwdvj0y8pDaLrb%2Fe%2FnF3pl0Yt%2F%2BFIlGANRYIRDJCcCBZMweI96cm%2FOLuAkPPUBluZYRVcFuMSV3XOT%2B5fTNq1x3HaFjyOV1rtgoxVboX%2FZHOF0EsdbkhXSIphHMuxzbFcdbJR7mHq4BhwUXb8MF9z3e33WtXJ%2FerbKA%2FxICBrEgxcESMamQolm5RlpoRKCNMtwTv6WZI0WIDGDHtJ%2FnDt4qTNKAEOxrEe0cCZx1KMBUeBzXcADCf%2Fe8sOk62TfHN%2FAuP1y7qtmsxaaXlqH04HhrsduTAuq6WKfLWagem8j%2FfhwSKJ5EhFXKRLvQ4f1%2FTlBcg9dALVyeKMg3dEYCW7IY30%2FWV%2F5P4n%2BI7N3BJqCHrnOA9XWRNSnxENSYHVTQEF8qdRBAKOHiy06i1RCI6pJ5RlpoRKCNMt5l954QZ3x2ctlibNwxfDa6Pq8k2l2jrYGaW90ojg7%2Bby4XC4S3Lm8bdMo0TE7a%2BfCW8EDTiXOmn3Iwm%2FtIlG7VFUrDvkapJL%2BBlH3HlrMclx4NCshpKWI3Ba9r0NYD%2BZDZs%2B%2FnVy4CWqYzJezeGOiQcK3rEX66wNU5QrWtGI3ayo3JmL0XtFL%2B25RnObSH5IDFO8bE2q0%2FEb1JnhIRajsHJn8wJSVDPwNVwoWAWUawMKcUfcStuFn2rTX8Mu84VQ7BIZwZU3Marp98%2BW%2FbjC2kmcQHnKsxJocPFS%2B7AQdmAR0fUO15Sd5KVdaS0DyOd1HvKWswTIkkjs1%2BmOIAwYVN6S2ekvR%2FOAKVkNm87Jj%2FhQTLkr83pUHvtPhZlB9%2Bhv9aEROhPyGzQrdPoCmI09akcDZALUC2TpjWW2XEsVT6qn8uz05jcn8AztBOY8FjN6b9ZMhAN3rMfD244Sje8OzGqiC51PPV0GA2k4wLiuOgnV18DkYaq3ivX%2FLfg8RIZ7tT7%2FsHT2zGUkx7NanMUsQkztBOY8FjN6XguFZ89upP8WWFoLhG%2Buzey6Ql6OmdOIHF7WjQX79Lh3CbopCs1XsaQY3AlQXDxppaaH9gl2y61EwZFUsQb3CmsJ3RmudiOGg9867BileUlos%2Fncin3g7x%2F9o9zV%2FFXc10Qb96nsOOmV8Qel1dMHmcqTLnD56DjmvMrhku8sPxDDcY1M9HHxtwBq3oSXeBUhWjLLOZrsraYexzOR%2FiGvPPoujU6O2WQom0IVh1MlpAUTsjctMqrnHy4BepXApYv%2FL0YLea1QXIhhsLJl%2F63ICsuTIvOWsGGTMPsvObSvMSQ81joha2tXR8FvHBygGJ6Xilp7FbUCbUd6xM4X4Zqlo425JlAmWsySrUJWHMSjycELYnUqn5aKjqXmjIvMP%2Faqr1WFpJfrotxBN7F3MBndXorJGWCfebQ1eay7lIvtSCoL1sbqimX3TTgaKmZhO7TkWskUtGXEGdqKKIQNPDRtzjBSG0os97jju2VCko81S8vnbuPV6qfwayoXpzB%2FkwRvi%2FGZ8KC2SZspYBi5%2Bvyuly1C%2BHv5BP8LRZjI1rh%2BRXsefqI7Q%2BYX52%2FZ8BpTYEayWU6qXq7llHvUe13hXfkbDZnuqVuhPcSX4UAysUBQaLoZAD%2FL5sFHyBRlpoRKCNMt5l954QZ3x2ctlibNwxfDa6Pq8k2l2jrYGaW90ojg7%2BbO4FhTMZABVJ0Lw8gXn9DSQnk9tbgCyzzJbwQNOJc6afj467E%2F47n%2BTO0E5jwWM3pB8ZnFGht7IvCizRFc0OoZoiBjJb0OFBwYfjuoHvqhQVllZEsLf3qxqFesjiCcAQs&mm_sceneid=1_0_44457495_0&spm=a21n57.1.item.5",
+      "price_text": "",
+      "sales_text": "人付款",
+      "shop_name": "12年老店 季静隔音门窗企业店"
+    }
+  ],
+  "records_count": 20,
+  "body_preview": "中国大陆  亲，请登录 免费注册 网页无障碍 淘宝网首页 已买到的宝贝 我的淘宝   购物车  收藏夹  免费开店  千牛卖家中心  帮助中心  搜索 搜同款 所有宝贝 天猫 淘宝 店铺 企业购 发货地 1 /100 综合 销量 价格 区间 淘金币抵钱 包邮 开票服务 退货宝 公益宝贝 筛选 上海南京杭州临街卧室加装隔音窗新春特价三层加强四层夹胶玻璃 内开 塑钢 夹层玻璃 ¥ 807 券后价 100+人付款 上海 官方立减15% 包邮 公益宝贝 8年老店 上海君悠隔音装饰工程公司 高架马路车流噪音大,就装隔音窗,签合同保证效果 内开 塑钢 隔音玻璃 ¥ 85 券后价 60人付款 上海 官方立减15% 包邮 公益宝贝 9年老店 宁逸隔音门窗企业店 窗户隔音自装加装降噪双层三层 PVB夹胶 夹层玻璃 塑钢 内开内倒 ¥ 85 券后价 200+人付款 浙江 杭州 官方立减15% 包邮 13年老店 杭州季静隔音玻璃门窗厂家 隔音窗户加装上海江苏浙江苏州卧室静音PVB夹胶三层真空玻璃窗户 内开内倒 塑钢 夹层玻璃 ¥ 85 券后价 100+人付款 江苏 苏州 官方立减15% 淘金",
+  "body_length": 4477,
+  "used_fallback": false,
+  "analysis": {
+    "readiness": "blocked",
+    "suggestions": [
+      "页面命中风控/验证码，先停止自动抓取并切人工接管。"
+    ],
+    "priority_fixes": [],
+    "positive_selector_count": 7,
+    "records_count": 20,
+    "body_length": 4477
+  }
+}

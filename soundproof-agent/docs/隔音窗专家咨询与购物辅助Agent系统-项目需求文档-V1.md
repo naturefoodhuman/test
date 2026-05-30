@@ -341,8 +341,12 @@ FastAPI + Jinja2 + HTMX + Alpine.js + Tailwind CSS；SQLite + SQLAlchemy；uv；
 - 抽象基类定义专家接口
 - 统一日志（logging，控制台 + 文件，异常堆栈）
 
-##### 【V1 实际实现现状】
-- ✅ 文件头部注释规范在所有新文件中遵守（见 `docs/AGENT_HANDOFF.md` §7.6）。
+##### 【V1 实际实现现状（2026-05-30 第五次更新）】
+- ✅ 文件头部注释规范在所有新文件中遵守（见 `docs/ONBOARDING_CHECKLIST.md` 第 7 步）。
+- ✅ **2026-05-30 第五次升级文件头规范**（用户硬性要求）：
+  - 必须写**具体大模型名**（如 `Claude Sonnet 4.5 (via Arena.ai Agent Mode)` / `GPT-5 Pro (via Arena.ai Agent Mode)` / `Gemini 2.5 Pro (via Arena.ai Agent Mode)`），**不能只写笼统的 "Arena.ai Agent Mode"**——否则无法追溯责任。
+  - 新增文件用 `# 创建该文件的LLM大模型：<名> / # 创建时间（北京时间，精确到秒）：YYYY-MM-DD HH:MM:SS CST`。
+  - 修改文件用 `# 修改该文件的LLM大模型：<名> / # 最后修改时间...` 并维护"修改记录"小段（最新在最上）。
 - ✅ 类型注解 / 中文 docstring / 抽象接口（`ShoppingExecutorInterface`）。
 - 🟡 统一日志：基础 logging 已用，未做完整双输出 + 滚动配置。
 

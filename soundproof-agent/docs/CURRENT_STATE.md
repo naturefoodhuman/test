@@ -37,8 +37,17 @@
 - **V1.5（知识库）**：待启动，前置 V1 全部交付。
 
 ## 当前测试状态
-- **91 项测试全部通过**（69 → 79 → 91）。
-- 新增覆盖：`tests/test_playwright_executor_dry.py`（10 项，mock playwright）+ `tests/test_api_app.py`（12 项，FastAPI 端到端）。
+- **103 项测试全部通过**（69 → 79 → 91 → 93 → 103）。
+- 新增覆盖（本轮 第五次 +10）：`tests/test_login_signal_logic.py`（10 项规则层单测，含 JS↔Python 镜像一致性校验、用真实 artifact 反推的回归测试）。
+
+## 当前最重要的本轮变更（2026-05-30 第五次）
+- ✅ **登录态判定优化**：SSO cookie 候选扩展（tracknick / lgc / dnk / lid / _tb_token_ / aui / sgcookie），signals 不再混淆强弱信号。
+- ✅ **check_login_status 加 reload 重试**：解决"扫码后必须手动刷新一下才更新登录态"的 race condition。
+- ✅ **CLI 摘要重写**：直接列出命中的 SSO cookie 候选，不再误导。
+- ✅ **新增 `.gitignore`**：完整忽略 runtime/、.venv/、__pycache__/、.env、patches/ 等。
+- ✅ **文件头规范升级**（用户硬性要求）：必须写**具体大模型名**（如 "Claude Sonnet 4.5 (via Arena.ai Agent Mode)"），不能只写笼统 "Arena.ai Agent Mode"。
+- ✅ **判据**：用户已实际登录成功，可以推进联调清单第 3 节探针。
+- 🟢 **教训沉淀**：第四轮 dry-run 测试用 FakePage 绕过 JS 判定的问题已通过 `tests/test_login_signal_logic.py` 解决——规则层单独测，并加 JS↔Python 镜像一致性校验。
 
 ## ADR-008 联调启动判据全部满足
 1. ✅ P1 列表基本完成（API / 报告统一 / anti-bot 接入 / risk 接入）。

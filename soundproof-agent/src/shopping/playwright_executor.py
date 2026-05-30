@@ -1,5 +1,13 @@
-# 创建该文件的LLM大模型名称：Arena.ai Agent Mode
-# 创建时间（北京时间，精确到秒）：2026-05-29 17:30:00 CST
+# 创建该文件的LLM大模型：Arena.ai Agent Mode（早期版本）
+# 修改该文件的LLM大模型：Claude Sonnet 4.5 (via Arena.ai Agent Mode)
+# 最后修改时间（北京时间，精确到秒）：2026-05-30 17:10:00 CST
+#
+# 修改记录：
+# - 2026-05-30 17:10 Claude Sonnet 4.5: 修两个 bug
+#   (A) _extract_login_status 扩展 SSO cookie 候选（增加 lgc/dnk/lid/_tb_token_/aui），
+#       淘宝当前版本 SSO cookie 已经不再用 _nk_/unb，主要是 tracknick + lgc + _tb_token_；
+#   (B) _extract_login_status 当已命中强信号时不再把 body_login_hint 加进 signals
+#       （淘宝首页 DOM 永远含隐藏的"亲，请登录"链接，是噪声）。
 
 from __future__ import annotations
 
@@ -171,13 +179,46 @@ class TaobaoPlaywrightExecutor(ShoppingExecutor):
         return file_path
 
     def check_login_status(self) -> dict[str, Any]:
-        """检查当前淘宝登录状态。"""
+        """检查当前淘宝登录状态。
+
+        2026-05-30 第五次改进（修"刷新一下才更新登录态"问题）：
+        - 首次 goto 后做一次 reload，让 SSO cookie 完整生效后再判定。
+          原因：用户实机反映"扫码后必须手动刷新一下才更新登录状态"——这是因为首次
+          load 时浏览器还在异步加载 cookie / 客户端 JS 还在写入 storage，
+          页面 DOM 显示的"登录态"和实际 cookie 不同步。reload 一次可强制同步。
+        - 如果首次读到的判定置信度不是 high，再 reload 一次重读，避免误报。
+        """
 
         with self._open_context() as context:
             page = context.pages[0] if context.pages else context.new_page()
             page.goto("https://www.taobao.com", wait_until="domcontentloaded", timeout=60_000)
-            self._paced_wait(page, multiplier=0.8, extra_seconds=0.2)
+            self._paced_wait(page, multiplier=0.8, extra_seconds=0.5)
+
+            # 第一次判定
             status = self._extract_login_status(page)
+            attempt_log = [{"attempt": 1, "is_logged_in": status.get("is_logged_in"), "confidence": status.get("confidence"), "signals": status.get("signals", [])}]
+
+            # 如果置信度不是 high 或 is_logged_in=False，做一次 reload 重读
+            # （处理"首次加载时 cookie 还没同步"的 race condition）
+            if status.get("confidence") != "high" or not status.get("is_logged_in"):
+                try:
+                    page.reload(wait_until="domcontentloaded", timeout=60_000)
+                    self._paced_wait(page, multiplier=0.8, extra_seconds=0.5)
+                    status_after_reload = self._extract_login_status(page)
+                    attempt_log.append({
+                        "attempt": 2,
+                        "is_logged_in": status_after_reload.get("is_logged_in"),
+                        "confidence": status_after_reload.get("confidence"),
+                        "signals": status_after_reload.get("signals", []),
+                    })
+                    # 如果 reload 后判定结果改变（更可信），用 reload 后的结果
+                    if status_after_reload.get("is_logged_in") or status_after_reload.get("confidence") == "high":
+                        status = status_after_reload
+                except Exception:
+                    # reload 失败就用第一次的结果
+                    pass
+
+            status["attempts"] = attempt_log
             html = page.content()
             self.save_debug_artifact("taobao_homepage_login_check.html", html)
             self.save_debug_artifact(
@@ -187,10 +228,21 @@ class TaobaoPlaywrightExecutor(ShoppingExecutor):
             return status
 
     def open_login_window(self, keep_open_seconds: int = 180) -> dict[str, Any]:
-        """打开淘宝首页并保留窗口一段时间，供用户手动扫码登录。"""
+        """打开淘宝登录页并保留窗口一段时间，供用户手动扫码登录。
+
+        关键改进（2026-05-30 第四次）：
+        1. 直接 goto 到 https://login.taobao.com（而不是首页），让淘宝弹出二维码；
+        2. 用户扫码登录后，淘宝会自动跳转回首页，URL 变化为 https://www.taobao.com/；
+        3. 等待期间用轮询的方式检测 URL 是否已离开 login.taobao.com，离开即认为登录成功；
+        4. 登录成功后**显式 goto 一次 https://i.taobao.com/my_taobao.htm**，强制触发 sso Cookie 完整写入；
+        5. 再回到首页做最终状态快照。
+        如果 keep_open_seconds 超时仍未登录，仍写出当时的状态供排查。
+        """
 
         with self._open_context() as context:
             page = context.pages[0] if context.pages else context.new_page()
+
+            # ===== 第一步：开打首页拿到 before 快照 =====
             page.goto("https://www.taobao.com", wait_until="domcontentloaded", timeout=60_000)
             self._paced_wait(page, multiplier=0.8, extra_seconds=0.2)
             before_status = self._extract_login_status(page)
@@ -198,16 +250,69 @@ class TaobaoPlaywrightExecutor(ShoppingExecutor):
                 "taobao_login_window_before.json",
                 json.dumps(before_status, ensure_ascii=False, indent=2),
             )
-            page.wait_for_timeout(max(1, keep_open_seconds) * 1000)
+
+            # 如果之前已经登录就直接走"刷新 + 写 after"路径
+            if before_status.get("is_logged_in"):
+                page.goto("https://i.taobao.com/my_taobao.htm", wait_until="domcontentloaded", timeout=60_000)
+                self._paced_wait(page, multiplier=0.8, extra_seconds=0.5)
+                after_status = self._extract_login_status(page)
+                self.save_debug_artifact(
+                    "taobao_login_window_after.json",
+                    json.dumps(after_status, ensure_ascii=False, indent=2),
+                )
+                return {
+                    "before": before_status,
+                    "after": after_status,
+                    "kept_open_seconds": keep_open_seconds,
+                    "login_detected_at_seconds": 0,
+                    "login_flow": "already_logged_in",
+                }
+
+            # ===== 第二步：跳到登录页让淘宝弹出二维码 =====
+            page.goto("https://login.taobao.com", wait_until="domcontentloaded", timeout=60_000)
+
+            # ===== 第三步：轮询等待 URL 离开 login.taobao.com（说明登录成功） =====
+            poll_interval_seconds = 3
+            detected_at = None
+            total_waited = 0
+            while total_waited < keep_open_seconds:
+                page.wait_for_timeout(poll_interval_seconds * 1000)
+                total_waited += poll_interval_seconds
+                try:
+                    current_url = page.url
+                except Exception:
+                    current_url = ""
+                # 登录成功后淘宝会跳到 www.taobao.com 或 i.taobao.com
+                if current_url and "login.taobao.com" not in current_url:
+                    detected_at = total_waited
+                    break
+
+            # ===== 第四步：登录后显式 goto 到 my_taobao 触发 Cookie 完整写入 =====
+            if detected_at is not None:
+                try:
+                    page.goto("https://i.taobao.com/my_taobao.htm", wait_until="domcontentloaded", timeout=60_000)
+                    self._paced_wait(page, multiplier=0.8, extra_seconds=0.5)
+                except Exception:
+                    pass
+
+            # ===== 第五步：回到首页拿最终状态 =====
+            try:
+                page.goto("https://www.taobao.com", wait_until="domcontentloaded", timeout=60_000)
+                self._paced_wait(page, multiplier=0.8, extra_seconds=0.5)
+            except Exception:
+                pass
             after_status = self._extract_login_status(page)
             self.save_debug_artifact(
                 "taobao_login_window_after.json",
                 json.dumps(after_status, ensure_ascii=False, indent=2),
             )
+
             return {
                 "before": before_status,
                 "after": after_status,
                 "kept_open_seconds": keep_open_seconds,
+                "login_detected_at_seconds": detected_at,
+                "login_flow": "login_page_with_polling" if detected_at is not None else "timeout_without_login",
             }
 
     def inspect_page_risk(self, url: str, wait_after_load_ms: int = 3000) -> dict[str, Any]:
@@ -525,7 +630,29 @@ class TaobaoPlaywrightExecutor(ShoppingExecutor):
 
     @staticmethod
     def _extract_login_status(page) -> dict[str, Any]:
-        """从淘宝首页判断是否已登录。"""
+        """从淘宝首页判断是否已登录。
+
+        判定策略（强信号优先；2026-05-30 第四次重写）：
+
+        弱信号（任何一个 "我的淘宝/已买到的宝贝" 都会在未登录态出现，不能直接用）：
+          - body 包含 "亲，请登录" → 几乎确定未登录。
+
+        强信号（出现任一即可判定已登录）：
+          1. document.cookie 里出现 `_nk_=` 或 `tracknick=`（淘宝把昵称写到 Cookie）；
+          2. body 中出现 "退出"（淘宝退出按钮）；
+          3. URL 为 i.taobao.com 域且 body 非常短 / 不含登录 hint；
+          4. document.cookie 中出现 `unb=`（user no.，淘宝登录后必有）。
+
+        返回字段：
+          - is_logged_in: bool — 最终判定
+          - confidence: high | medium | low | unknown
+          - signals: list[str] — 命中的信号名
+          - login_hint_present: bool — 是否出现登录引导文本
+          - nickname_candidates: list[str] — 可能的昵称候选（用于人工核对）
+          - cookie_keys: list[str] — Cookie 键名清单（用于排查 sso 是否落盘，不含值）
+          - url: str — 当前页面 URL
+          - body_preview: str — body 前 200 字
+        """
 
         try:
             payload = page.evaluate(
@@ -533,20 +660,63 @@ class TaobaoPlaywrightExecutor(ShoppingExecutor):
 () => {
   const clean = (value) => (value || '').replace(/\s+/g, ' ').trim();
   const bodyText = clean(document.body ? document.body.innerText : '');
-  const loginHints = ['亲，请登录', '登录', '请登录'];
-  const logoutHints = ['退出', '已买到的宝贝', '我的淘宝'];
+  const cookieStr = document.cookie || '';
+  const cookieKeys = cookieStr
+    .split(';')
+    .map((pair) => pair.split('=')[0].trim())
+    .filter(Boolean);
 
-  const isLoggedIn = logoutHints.some((hint) => bodyText.includes(hint)) && !bodyText.includes('亲，请登录');
+  // 强信号判定（2026-05-30 第五次：扩展 SSO cookie 候选）
+  // 淘宝当前版本（2025+）SSO cookie 已不再用 _nk_/unb，主要靠 tracknick + lgc + _tb_token_
+  // 我们检查多个候选，任一命中即视为登录。
+  const signals = [];
+  const ssoNickCookies = ['tracknick', '_nk_', 'lgc', 'dnk', 'lid'];
+  const ssoTokenCookies = ['_tb_token_', 'unb', 'aui', 'sgcookie'];
+  const hasNickCookie = ssoNickCookies.some((name) => new RegExp('(?:^|;\\s*)' + name + '=').test(cookieStr));
+  if (hasNickCookie) signals.push('cookie_nick');
+  const hasTokenCookie = ssoTokenCookies.some((name) => new RegExp('(?:^|;\\s*)' + name + '=').test(cookieStr));
+  if (hasTokenCookie) signals.push('cookie_token');
+  const hasLogoutText = bodyText.includes('退出');
+  if (hasLogoutText) signals.push('body_logout_text');
+
+  // 弱信号 / 反向信号判定
+  // 注意：淘宝首页 DOM 里**永远**有一个隐藏的"亲，请登录"链接（即便已登录），
+  // 所以 body_login_hint 单独存在不一定意味着未登录；只有在强信号都没命中时才有判定价值。
+  const hasLoginHint = bodyText.includes('亲，请登录') || bodyText.includes('请登录');
+
+  // 综合判定（强信号优先；强信号命中后 body_login_hint 不进 signals 列表，避免误导）
+  let isLoggedIn = false;
+  let confidence = 'unknown';
+  const hasAnyStrongSignal = hasNickCookie || hasTokenCookie || hasLogoutText;
+  if (hasAnyStrongSignal) {
+    isLoggedIn = true;
+    confidence = 'high';
+    // 不把 body_login_hint 放进 signals，避免与强信号混在一起显得矛盾
+  } else if (hasLoginHint) {
+    isLoggedIn = false;
+    confidence = 'high';
+    signals.push('body_login_hint');
+  } else {
+    // 既无强信号、又无 hint，可能页面还没加载完
+    isLoggedIn = false;
+    confidence = 'low';
+  }
+
+  // 昵称候选（仅人工核对用，不参与判定）
   const nicknameCandidates = Array.from(document.querySelectorAll('a, span, div'))
     .map((node) => clean(node.innerText))
     .filter((text) => text && text.length <= 24)
-    .filter((text) => /会员|店铺|淘宝|天猫/.test(text) === false);
+    .filter((text) => !/会员|店铺|淘宝|天猫|登录|注册/.test(text));
 
   return {
     is_logged_in: isLoggedIn,
-    body_preview: bodyText.slice(0, 200),
+    confidence: confidence,
+    signals: signals,
+    login_hint_present: hasLoginHint,
     nickname_candidates: nicknameCandidates.slice(0, 10),
-    login_hint_present: loginHints.some((hint) => bodyText.includes(hint)),
+    cookie_keys: cookieKeys,
+    url: window.location ? window.location.href : '',
+    body_preview: bodyText.slice(0, 200),
   };
 }
                 """
@@ -557,9 +727,13 @@ class TaobaoPlaywrightExecutor(ShoppingExecutor):
             pass
         return {
             "is_logged_in": False,
-            "body_preview": "",
-            "nickname_candidates": [],
+            "confidence": "unknown",
+            "signals": [],
             "login_hint_present": None,
+            "nickname_candidates": [],
+            "cookie_keys": [],
+            "url": "",
+            "body_preview": "",
         }
 
     def _search_selector_probe_script(self, include_fallbacks: bool = False) -> str:

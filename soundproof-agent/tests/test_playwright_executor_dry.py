@@ -57,6 +57,7 @@ class _FakePage:
         page_title_text: str = "",
         html: str = "<html></html>",
         login_payload: dict[str, Any] | None = None,
+        initial_url: str = "https://www.taobao.com/",
     ) -> None:
         self.body_text = body_text
         self.listing_records_primary = listing_records_primary or []
@@ -67,20 +68,34 @@ class _FakePage:
         self._html = html
         self._login_payload = login_payload or {
             "is_logged_in": True,
+            "confidence": "high",
+            "signals": ["cookie_nick"],
             "body_preview": body_text[:200],
             "nickname_candidates": [],
             "login_hint_present": False,
+            "cookie_keys": ["_nk_", "unb"],
+            "url": initial_url,
         }
+        self._current_url = initial_url
         self.goto_calls: list[tuple[str, dict]] = []
         self.evaluate_calls: list[str] = []
         self.wait_calls: list[int] = []
         self.screenshot_calls: list[str] = []
         self._primary_evaluate_yielded = False
 
+    @property
+    def url(self) -> str:
+        return self._current_url
+
     # ===== Playwright API 表面 =====
 
     def goto(self, url: str, *, wait_until: str = "load", timeout: int = 60000) -> None:
         self.goto_calls.append((url, {"wait_until": wait_until, "timeout": timeout}))
+        self._current_url = url
+
+    def reload(self, *, wait_until: str = "load", timeout: int = 60000) -> None:
+        # 模拟 reload 行为：不改 url，但记录一次调用，便于测试断言
+        self.goto_calls.append((self._current_url, {"wait_until": wait_until, "timeout": timeout, "reload": True}))
 
     def wait_for_timeout(self, ms: int) -> None:
         self.wait_calls.append(ms)
@@ -391,15 +406,77 @@ class TaobaoPlaywrightExecutorDryRunTestCase(unittest.TestCase):
                 body_text="我的淘宝 退出",
                 login_payload={
                     "is_logged_in": True,
+                    "confidence": "high",
+                    "signals": ["body_logout_text"],
                     "body_preview": "我的淘宝 退出",
                     "nickname_candidates": ["昵称X"],
                     "login_hint_present": False,
+                    "cookie_keys": ["_nk_", "unb", "cna"],
+                    "url": "https://www.taobao.com/",
                 },
             )
             with _patch_open_context(executor, page):
                 payload = executor.check_login_status()
             self.assertTrue(payload["is_logged_in"])
+            self.assertEqual(payload["confidence"], "high")
             self.assertIn("login_check.json", "\n".join(executor.get_recent_artifact_names()))
+
+    def test_open_login_window_already_logged_in_returns_short_circuit(self) -> None:
+        """如果一开始就已登录，open_login_window 应直接走 already_logged_in 分支。"""
+
+        with tempfile.TemporaryDirectory() as tmp:
+            executor = _make_executor(Path(tmp))
+            page = _FakePage(
+                body_text="我的淘宝 退出 已买到的宝贝",
+                login_payload={
+                    "is_logged_in": True,
+                    "confidence": "high",
+                    "signals": ["cookie_nick", "body_logout_text"],
+                    "body_preview": "已登录",
+                    "nickname_candidates": ["TestUser"],
+                    "login_hint_present": False,
+                    "cookie_keys": ["_nk_", "unb"],
+                    "url": "https://www.taobao.com/",
+                },
+            )
+            with _patch_open_context(executor, page):
+                payload = executor.open_login_window(keep_open_seconds=10)
+            self.assertEqual(payload["login_flow"], "already_logged_in")
+            self.assertEqual(payload["login_detected_at_seconds"], 0)
+            self.assertTrue(payload["before"]["is_logged_in"])
+
+    def test_open_login_window_times_out_when_not_logged_in(self) -> None:
+        """如果用户没扫码登录（页面 URL 始终在 login.taobao.com），应在超时后报告 timeout_without_login。"""
+
+        with tempfile.TemporaryDirectory() as tmp:
+            executor = _make_executor(Path(tmp))
+
+            # 自定义 page：goto 后强制把 _current_url 保持在 login.taobao.com，
+            # 模拟"二维码弹出但用户没扫码"。
+            class _StuckOnLoginPage(_FakePage):
+                def goto(self, url, *, wait_until="load", timeout=60000):
+                    super().goto(url, wait_until=wait_until, timeout=timeout)
+                    # 一旦跳到 login.taobao.com 之后，所有 goto 都被"卡住"
+                    if "login.taobao.com" in url:
+                        self._current_url = "https://login.taobao.com/"
+
+            page = _StuckOnLoginPage(
+                body_text="亲，请登录 免费注册",
+                login_payload={
+                    "is_logged_in": False,
+                    "confidence": "high",
+                    "signals": ["body_login_hint"],
+                    "body_preview": "亲，请登录",
+                    "nickname_candidates": [],
+                    "login_hint_present": True,
+                    "cookie_keys": ["cna"],
+                    "url": "https://login.taobao.com/",
+                },
+            )
+            with _patch_open_context(executor, page):
+                payload = executor.open_login_window(keep_open_seconds=6)
+            self.assertEqual(payload["login_flow"], "timeout_without_login")
+            self.assertIsNone(payload["login_detected_at_seconds"])
 
 
 if __name__ == "__main__":

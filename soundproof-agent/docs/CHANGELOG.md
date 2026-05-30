@@ -11,7 +11,145 @@
 
 约定：
 - 一轮 = 一次完整的 Agent 会话；意外中止后由新 Agent 继续，算新一轮。
-- 每轮条目至少包含：日期、Agent 名、动机、改了什么、测试状态、对项目需求文档（V1 docx）的影响。
+- 每轮条目至少包含：日期、**具体大模型名**（如 "Claude Sonnet 4.5 (via Arena.ai Agent Mode)"——这是用户硬性要求，必须写到具体型号，便于追溯）、动机、改了什么、测试状态、对项目需求文档（V1 docx）的影响。
+
+---
+
+## 2026-05-30（第五次）— Claude Sonnet 4.5 (via Arena.ai Agent Mode)（登录态判定优化 + 文件头规范升级）
+
+### 动机
+用户第二次实机回传 artifact 显示**已登录成功**（`is_logged_in: true`），但用户体验混乱：
+1. `signals` 列表同时含 `cookie_nick`（强）和 `body_login_hint`（弱反向），让人看着像"既登录又没登录"；
+2. CLI 摘要检查的 SSO cookie 候选只有 `_nk_` / `tracknick` / `unb`，但用户的真实 cookie 集是 `tracknick / lgc / dnk / aui / _tb_token_`，摘要里显示 `_nk_=False unb=False` 误导；
+3. 用户提到"扫码后必须手动刷新一下才更新登录状态"——首次加载存在 race condition。
+
+同时用户提出 **3 个新要求**：
+- 文件头注释必须写**具体大模型名**（不能只写 "Arena.ai Agent Mode"），以便追溯责任；
+- 需要 `.gitignore` 防止 runtime/、.env 等被推到 GitHub；
+- 每轮代码改动通过 zip 补丁 + 用户手动 `git push`（选方案 B）。
+
+### 改了什么
+
+**代码修复（src/shopping/playwright_executor.py）：**
+- `_extract_login_status` 的 JS 判定逻辑：
+  - SSO nick cookie 候选扩展为 `[tracknick, _nk_, lgc, dnk, lid]`；
+  - SSO token cookie 候选扩展为 `[_tb_token_, unb, aui, sgcookie]`；
+  - signals 改名：`cookie_nick`（nick 类命中）/ `cookie_token`（token 类命中）/ `body_logout_text`；
+  - **关键**：当任一强信号命中时，**不再**把 `body_login_hint` 加进 `signals`（淘宝首页 DOM 永远含隐藏的"亲，请登录"链接，是噪声，当时 signals 同时含强信号+反向信号让用户困惑）；
+  - 但 `login_hint_present` 字段仍然返回，方便调试。
+- `check_login_status` 加 **reload 重试机制**：
+  - 首次判定后如果 `confidence != 'high'` 或 `is_logged_in == False`，做一次 page.reload；
+  - 解决"首次加载 cookie 还没同步"的 race condition（用户报告的"刷新一下才更新登录态"问题）；
+  - 返回 `attempts` 字段记录每次尝试的判定结果。
+
+**CLI 改进（src/phase1_cli.py）：**
+- `_summarize_login_status` 输出改用**实际命中的 cookie 候选清单**，分"昵称类 SSO Cookie"和"Token 类 SSO Cookie"两栏；
+- 不再只显示 `_nk_=True/False unb=True/False`，而是直接列出 `tracknick, lgc, dnk` 等具体命中的 cookie。
+
+**新增测试（tests/test_login_signal_logic.py）：**
+- 10 项独立单元测试，把 JS 判定逻辑**用 Python 镜像重写一份**做规则层覆盖；
+- 包含一致性测试 `test_js_and_python_cookie_lists_match`：用正则从 JS 源码抓取数组定义与 Python 镜像对比，**防止以后改 JS 忘了同步改 Python 镜像**；
+- 含回归测试 `test_real_world_logged_in_artifact_2026_05_30`：用本次用户回传的真实 artifact 反推 cookie 字符串，验证新逻辑下结果正确。
+- 教训沉淀：dry-run 用 FakePage 的 `login_payload` 直接 mock dict 会绕过 JS 判定，必须额外加规则层测试。
+
+**新增文件（test/.gitignore）：**
+- 完整忽略：`.venv/`, `runtime/`, `__pycache__/`, `*.pyc`, `.env`, `patches/`, `.DS_Store` 等；
+- 保留：`tests/fixtures/`, `.env.example`；
+- 放在仓库根（`test/.gitignore`），让 `git add .` 时自动生效。
+
+**文件头规范升级（用户硬性要求）：**
+- `docs/ONBOARDING_CHECKLIST.md` 第 7 步重写：要求新增/修改文件头必须写**具体大模型名**（如 "Claude Sonnet 4.5 (via Arena.ai Agent Mode)"），而不是笼统 "Arena.ai Agent Mode"；
+- 修改文件还必须维护"修改记录"小段，按时间倒序追加；
+- 同步进 V1 需求文档 §8.4 与 docx（触发 ADR-010 第 4 类"开发规范变化"同步）。
+
+### 测试状态
+- `PYTHONPATH=src python3 -m unittest discover -s tests` → **103 项全部通过**（93 → 103，本轮新增 10 项 + 1 项 reload mock）。
+- 新增 `test_login_signal_logic.py` 10 项专注于判定规则的覆盖。
+
+### 对 V1 项目需求文档的影响
+- **触发** ADR-010 第 4 类（开发规范变化）：§8.4 代码质量标准里增加文件头注释新规范。
+- md + docx 已同步更新。
+
+### 用户判定：**你已经登录成功了！**
+你回传的 `taobao_homepage_login_check.json` 里 `is_logged_in: true`，cookie 含 `tracknick / lgc / dnk / aui / _tb_token_`——这些都是淘宝当前版本登录后必有的 SSO cookie。
+**你可以直接进入联调清单第 3 节探针**：
+```bash
+uv run python src/phase1_cli.py probe-search-query --query "隔音窗 夹胶中空 系统窗 性价比"
+```
+
+### 给下一位 Agent 的提示
+- 本轮升级的文件头规范是用户硬性要求，请**严格遵守**；
+- `tests/test_login_signal_logic.py` 是新的判定规则单测，以后任何登录判定逻辑改动必须同步改这里；
+- 用户已确定 push 方案 B（Agent 打 zip 补丁，用户应用后手动 `git push`），不要尝试帮用户 push。
+
+---
+
+## 2026-05-30（第四次）— Arena.ai Agent Mode（首次实机 bug 修复轮）
+
+### 动机
+用户在 Mac 上启动联调，扫码登录后 `check-login` 报 `is_logged_in: false`。回传的 artifact 显示：
+- HTML 含 `<a class="h">亲，请登录</a>`（明确未登录链接）；
+- HTML 同时含"我的淘宝/已买到的宝贝"菜单（这些菜单**未登录态也有**，属未登录态的引导按钮）；
+- 旧版 `_extract_login_status` 的判定逻辑：`logoutHints.some(...) && !bodyText.includes('亲，请登录')` —— 当首页文本同时含"我的淘宝"和"亲，请登录"时，被错误判定为"未登录"，但本质上是判定逻辑对淘宝首页 DOM 不可靠。
+- 更深层问题：旧版 `open_login_window` 仅 `goto www.taobao.com` 后等 240 秒，**期间页面不刷新**，扫码登录的二维码根本没出现 —— 用户实际可能在新窗口/默认浏览器里扫了码，但脚本控制的 Chromium profile 没被同步。
+
+### 改了什么
+
+**核心修复（playwright_executor.py）：**
+- 重写 `_extract_login_status`：改用**多信号判定**：
+  - 强信号 1：`document.cookie` 里出现 `_nk_=` 或 `tracknick=`（淘宝把昵称写到 cookie）；
+  - 强信号 2：`document.cookie` 里出现 `unb=`（user no.，登录后必有）；
+  - 强信号 3：body 出现"退出"两字；
+  - 反向信号：body 出现"亲，请登录" / "请登录"；
+  - 返回新增字段：`confidence`（high/low/unknown）、`signals`（命中信号列表）、`cookie_keys`（cookie 键名，不含值）、`url`（当前 URL）。
+- 重写 `open_login_window`：
+  - 第 1 步 goto 首页拿 before 快照；
+  - 第 2 步如果已登录则短路径直接结束；
+  - 第 3 步否则跳到 `https://login.taobao.com` 让淘宝弹二维码；
+  - 第 4 步轮询页面 URL（每 3 秒），等待 URL 离开 login.taobao.com（=登录成功跳转）；
+  - 第 5 步显式 goto `i.taobao.com/my_taobao.htm` 触发 sso cookie 完整写入；
+  - 第 6 步回到首页拿 after 快照；
+  - 返回新增字段：`login_detected_at_seconds`、`login_flow`（already_logged_in / login_page_with_polling / timeout_without_login）。
+
+**CLI 改进（phase1_cli.py）：**
+- `check-login` / `open-login-window` 新增**人类友好摘要**（带 ✅/❌、confidence、命中信号、sso Cookie 状态、当前 URL），保留完整 JSON 输出在后面。
+- `open-login-window` 默认 `--keep-open-seconds` 由 180 调整为 240。
+
+**测试新增（test_playwright_executor_dry.py）：**
+- `test_open_login_window_already_logged_in_returns_short_circuit`：已登录场景走 already_logged_in 短路径。
+- `test_open_login_window_times_out_when_not_logged_in`：模拟 URL 一直卡在 login.taobao.com 应正确报 timeout_without_login。
+- `_FakePage` 加 `url` 属性 + `goto` 时更新 `_current_url`，支持 URL 轮询测试。
+
+**联调清单大改（docs/phase1_real_test_checklist.md）：**
+- §2 整节重写：新流程详细说明 + 输出示例 + 4 种异常排查表（含"为什么会扫码无效")。
+
+### 测试状态
+- `PYTHONPATH=src python3 -m unittest discover -s tests` → **93 项全部通过**（91 → 93，本轮新增 2 项 open_login_window 测试）。
+- 现有 dry-run + API 测试全部不破坏。
+
+### 对 V1 项目需求文档的影响
+- 不触发 ADR-010 同步条件（属于"bug 修复 + 实现细节调整"）。md / docx 不动。
+- §4.4 D 购物参谋的"登录态复用"实际现状从"未实机验证" → "首次实机回传问题已修复，待用户重测"。
+
+### 用户下一步（请按顺序做）
+1. **应用补丁**：把本轮 zip 补丁覆盖到 Mac 项目目录（具体在本回复给）。
+2. **删除旧 profile 重测**（**关键**！否则旧的失败 cookie 会干扰）：
+   ```bash
+   rm -rf runtime/browser_profiles/taobao/
+   ```
+3. 重做联调清单 §2：
+   ```bash
+   uv run python src/phase1_cli.py check-login   # 应该 ❌ 未登录 + confidence=high
+   uv run python src/phase1_cli.py open-login-window --keep-open-seconds 240
+   # 看清楚：现在会跳到 login.taobao.com 弹二维码
+   # 扫码后看到脚本提示"在第 X 秒检测到跳转出 login.taobao.com"
+   uv run python src/phase1_cli.py check-login   # 应该 ✅ 已登录 + confidence=high
+   ```
+4. 如果还是失败，把 `runtime/artifacts/taobao_*.json` 全部回传 Agent。
+
+### 给下一位 Agent 的提示
+- 此前用 monkey-patch + FakePage 写的 dry-run 测试**没有暴露这个 bug**——因为 FakePage 的 `login_payload` 是直接返回 dict，绕过了 `_extract_login_status` 内部的 JS 判定逻辑。下次新增类似"页面文本判定"的功能时，要么用真实浏览器跑、要么 mock 到 `page.evaluate` 的 JS 执行层（更接近真实）。
+- 已用 evidence-based 调试（看真实 HTML + JSON）定位问题，比改代码盲猜快得多。
 
 ---
 

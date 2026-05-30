@@ -1,0 +1,99 @@
+# 创建/修改该文件的LLM大模型：Claude Sonnet 4.5 (via Arena.ai Agent Mode)
+# 创建时间（北京时间，精确到秒）：2026-05-30 17:05:00 CST
+
+# ========== Python ==========
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+.eggs/
+build/
+dist/
+*.so
+.Python
+
+# ========== 虚拟环境 ==========
+.venv/
+venv/
+ENV/
+env/
+.python-version
+
+# ========== uv ==========
+# uv 锁文件应该提交，但本地缓存不需要
+.uv-cache/
+
+# ========== 测试 / 覆盖率 ==========
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+
+# ========== IDE ==========
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ========== 项目运行时产物（关键：不要把这些推到 GitHub） ==========
+# Phase 1 运行时根目录，包含浏览器 profile、artifact、SQLite 缓存、export
+soundproof-agent/runtime/cache
+soundproof-agent/runtime/browser_profiles
+
+# Phase 0 评测产出
+soundproof-agent/phase0_outputs/
+
+# 补丁包不应入库（你本地应用即可，不传到 GitHub）
+patches/
+
+# 环境变量与本地密钥（绝对不能提交）
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+.netrc
+
+# 本地配置覆盖（如果你在本地改了 config.yaml 想保留改动而不想推到 GitHub，可以单独建个 config.local.yaml）
+soundproof-agent/config.local.yaml
+soundproof-agent/runtime/selector_overrides.yaml
+
+# ========== macOS / Windows / Linux ==========
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Desktop.ini
+
+# ========== 临时文件 ==========
+*.tmp
+*.bak
+*.log
+/tmp/
+
+# ========== Node / 前端（V1 没用，但留着以防未来引入） ==========
+node_modules/
+.next/
+.nuxt/
+.output/
+.parcel-cache/
+.svelte-kit/
+.turbo/
+.vite/
+
+# ========== 例外（用 ! 强制保留） ==========
+# 不忽略 fixtures（测试需要）
+!soundproof-agent/tests/fixtures/
+!soundproof-agent/tests/fixtures/**
+
+# .env.example 应该提交，作为模板
+!soundproof-agent/.env.example

@@ -1,5 +1,11 @@
-# 创建该文件的LLM大模型名称：Arena.ai Agent Mode
-# 创建时间（北京时间，精确到秒）：2026-05-27 23:58:35 CST
+# 创建该文件的LLM大模型：Arena.ai Agent Mode（早期版本）
+# 修改该文件的LLM大模型：Claude Sonnet 4.5 (via Arena.ai Agent Mode)
+# 最后修改时间（北京时间，精确到秒）：2026-05-30 17:12:00 CST
+#
+# 修改记录：
+# - 2026-05-30 17:12 Claude Sonnet 4.5: _summarize_login_status 扩展 SSO cookie 候选
+#   清单（增加 lgc / dnk / lid / _tb_token_ / aui / sgcookie），让 CLI 输出能正确
+#   反映淘宝当前版本的登录态判定依据。
 
 from __future__ import annotations
 
@@ -397,6 +403,32 @@ def inspect_page_risk(
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
+def _summarize_login_status(status: dict) -> str:
+    """把登录态判定结果整理成人类一眼可见的摘要。
+
+    2026-05-30 第五次更新：扩展 SSO cookie 候选清单。
+    淘宝当前版本（2025+）SSO cookie 不再用 _nk_/unb，主要靠 tracknick/lgc/_tb_token_。
+    """
+
+    is_logged_in = status.get("is_logged_in", False)
+    confidence = status.get("confidence", "unknown")
+    signals = status.get("signals") or []
+    cookie_keys = status.get("cookie_keys") or []
+    # 列出 cookie 候选中实际命中的，比单独列 _nk_/unb 信息量更大
+    sso_nick_candidates = {"tracknick", "_nk_", "lgc", "dnk", "lid"}
+    sso_token_candidates = {"_tb_token_", "unb", "aui", "sgcookie"}
+    hit_nick = [k for k in cookie_keys if k in sso_nick_candidates]
+    hit_token = [k for k in cookie_keys if k in sso_token_candidates]
+    label = "✅ 已登录" if is_logged_in else "❌ 未登录"
+    return (
+        f"{label}（confidence={confidence}）\n"
+        f"  - 命中信号：{', '.join(signals) if signals else '无'}\n"
+        f"  - 昵称类 SSO Cookie：{', '.join(hit_nick) if hit_nick else '无'}\n"
+        f"  - Token 类 SSO Cookie：{', '.join(hit_token) if hit_token else '无'}\n"
+        f"  - 当前 URL：{status.get('url') or '(unknown)'}"
+    )
+
+
 @app.command("check-login")
 def check_login(project_root: str = ".", config_path: str = "config.yaml") -> None:
     """检查当前淘宝登录状态。"""
@@ -404,20 +436,39 @@ def check_login(project_root: str = ".", config_path: str = "config.yaml") -> No
     root = Path(project_root).resolve()
     live_service, _bundle = _build_live_service(root, config_path)
     result = live_service.executor.check_login_status()
+    print(_summarize_login_status(result))
+    print("\n完整 JSON：")
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
 @app.command("open-login-window")
 def open_login_window(
-    keep_open_seconds: int = typer.Option(180, help="保持窗口打开的秒数，供人工扫码登录"),
+    keep_open_seconds: int = typer.Option(240, help="保持窗口打开的秒数，供人工扫码登录"),
     project_root: str = ".",
     config_path: str = "config.yaml",
 ) -> None:
-    """打开淘宝首页并保留窗口一段时间，供人工扫码登录。"""
+    """打开淘宝登录页（login.taobao.com）并保留窗口供人工扫码。
+
+    流程（2026-05-30 第四次重写）：
+    1. 先打开 https://www.taobao.com 拿到 before 快照；
+    2. 若已登录则直接走"刷新 + 写 after"短路径；
+    3. 否则跳到 https://login.taobao.com 让淘宝弹出二维码；
+    4. 用户扫码登录后，淘宝会自动跳转，脚本通过轮询 URL 检测；
+    5. 检测到跳转后显式 goto i.taobao.com/my_taobao 触发 sso Cookie 完整写入；
+    6. 最后回到首页拿 after 快照。
+    """
 
     root = Path(project_root).resolve()
     live_service, _bundle = _build_live_service(root, config_path)
     result = live_service.executor.open_login_window(keep_open_seconds=keep_open_seconds)
+    flow = result.get("login_flow", "unknown")
+    detected_at = result.get("login_detected_at_seconds")
+    print(f"登录流程：{flow}")
+    if detected_at is not None:
+        print(f"在第 {detected_at} 秒检测到跳转出 login.taobao.com")
+    print("\nafter 快照：")
+    print(_summarize_login_status(result.get("after", {})))
+    print("\n完整 JSON：")
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 

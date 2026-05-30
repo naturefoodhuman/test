@@ -67,24 +67,45 @@ PYTHONPATH=src uv run python -m unittest discover -s tests
 
 ## 2. 登录态准备（约 5 分钟）
 
+> 2026-05-30 重要重写：旧版判定逻辑会把"未登录但首页有'我的淘宝'菜单"误判为已登录的反向 bug；同时旧版 `open-login-window` 只 goto 首页等待，不会跳到登录页 → 导致扫码后首页 DOM 不刷新 → 登录态拿不到。已全部修复。
+
 ### 2.1 检查当前登录状态（首次预期未登录）
 
 ```bash
 uv run python src/phase1_cli.py check-login
 ```
 
-预期：`is_logged_in: false`。文件 `runtime/artifacts/taobao_homepage_login_check.json` 会被写出。
+预期输出（首次未登录）：
+```
+❌ 未登录（confidence=high）
+  - 命中信号：body_login_hint
+  - sso Cookie：_nk_=False unb=False
+  - 当前 URL：https://www.taobao.com/
+```
 
-### 2.2 打开淘宝登录窗口（手动扫码）
+> 看 `confidence`：`high` = 判定可信；`low` = 页面没加载完，重试一次。
+> 看 `sso Cookie`：`_nk_` 和 `unb` 是淘宝登录后必然下发的，**它们是否存在比 body 文本更可靠**。
+
+### 2.2 打开淘宝登录页（手动扫码）
 
 ```bash
 uv run python src/phase1_cli.py open-login-window --keep-open-seconds 240
 ```
 
-操作：
-1. 浏览器自动打开淘宝首页。
-2. **你**用手机淘宝扫码登录（注意：登录态会保存在 `runtime/browser_profiles/taobao/`，本地存储不入库不发送任何外部）。
-3. 等到命令自动结束（240 秒）或手动关闭浏览器。
+新的流程（**与旧版不同，请仔细看**）：
+1. 浏览器自动打开 `https://www.taobao.com` 拿到 before 快照；
+2. 如果已登录则直接刷新 + 写 after 快照，直接结束；
+3. 否则跳转到 `https://login.taobao.com` —— **页面应该出现淘宝的扫码二维码**；
+4. **你用手机淘宝扫码**；
+5. 淘宝会自动跳转回 `https://www.taobao.com/`（脚本每 3 秒轮询 URL 检测跳转）；
+6. 检测到跳转后脚本会自动 `goto https://i.taobao.com/my_taobao.htm` 强制写入 sso Cookie；
+7. 最后回到首页拿 after 快照，整个命令结束。
+
+> ⚠️ **不要在脚本运行期间手动关闭浏览器**——会导致 Cookie 写入中断。让脚本自然结束（你扫码完会自动到第 5 步开始计时跳转，到第 7 步才会结束）。
+>
+> ⚠️ 如果命令结束后输出 `登录流程：timeout_without_login`，说明 240 秒里你没扫码或扫码没成功，重试一次。
+>
+> ⚠️ 如果输出 `登录流程：already_logged_in`，说明 profile 里 Cookie 已经有效（你之前扫过），直接跳到 2.3。
 
 ### 2.3 验证登录态
 
@@ -92,10 +113,32 @@ uv run python src/phase1_cli.py open-login-window --keep-open-seconds 240
 uv run python src/phase1_cli.py check-login
 ```
 
-预期：`is_logged_in: true`。如果仍是 false：
-- 检查 `runtime/browser_profiles/taobao/` 是否非空。
-- 重做 2.2，延长 `--keep-open-seconds`。
-- 把 `runtime/artifacts/taobao_homepage_login_check.json` 回传 Agent。
+预期输出（已登录，2026-05-30 第五次更新格式）：
+```
+✅ 已登录（confidence=high）
+  - 命中信号：cookie_nick, cookie_token
+  - 昵称类 SSO Cookie：tracknick, lgc, dnk
+  - Token 类 SSO Cookie：_tb_token_, aui
+  - 当前 URL：https://www.taobao.com/
+```
+
+> **解读**：
+> - `命中信号` 是 cookie_nick + cookie_token 两项强信号 → 已登录；
+> - 实际命中的 SSO cookie 名字会列出来（淘宝当前主用 `tracknick / lgc / dnk / _tb_token_`，旧版的 `_nk_ / unb` 已经不下发）；
+> - 即便 body 里有"亲，请登录"文本（淘宝首页 DOM 永远有这个隐藏链接），只要强信号命中，**不**会出现在 `命中信号` 列表里。
+
+> ⚠️ **2026-05-30 第五次改进**：`check-login` 现在会**自动 reload 一次**重读登录态，解决"首次扫码后必须手动刷新一下才更新"的 race condition。
+> 完整 JSON 里会有 `attempts` 字段显示两次尝试的判定结果，便于排查。
+
+如果还是 `❌ 未登录`：
+
+| 现象 | 可能原因 | 处理 |
+|---|---|---|
+| `昵称类 SSO Cookie：无` 和 `Token 类 SSO Cookie：无`，`confidence=high` | 浏览器 profile 里没存到任何 SSO cookie | 重做 2.2，**不要中途关浏览器**；删除 `runtime/browser_profiles/taobao/` 重试 |
+| `cookie_keys` 只有 `cna / t / xlly_s / _m_h5_tk` 这类 | 只下发了埋点 cookie | 扫码确认时如果有"是否允许 PC 登录"弹窗，需要在手机上确认；重做 2.2 |
+| `confidence=low` 且 `body_preview` 很短 | 页面没加载完 | 增加网络等待；或确认网络代理设置 |
+| `attempts` 里第一次未登录、第二次（reload 后）已登录 | 正常的 race condition，已被 reload 兜底 | 无须处理，最终判定为已登录即可 |
+| 全部正常但仍未登录 | 淘宝可能下发了新的 cookie 字段 | 把 `runtime/artifacts/taobao_homepage_login_check.{json,html}` 回传 Agent |
 
 ---
 

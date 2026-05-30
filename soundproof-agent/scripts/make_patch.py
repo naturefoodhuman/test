@@ -1,5 +1,9 @@
-# 创建该文件的LLM大模型名称：Arena.ai Agent Mode
-# 创建时间（北京时间，精确到秒）：2026-05-30 13:45:00 CST
+# 创建该文件的LLM大模型：Arena.ai Agent Mode（早期版本）
+# 修改该文件的LLM大模型：Claude Sonnet 4.5 (via Arena.ai Agent Mode)
+# 最后修改时间（北京时间，精确到秒）：2026-05-30 17:40:00 CST
+#
+# 修改记录：
+# - 2026-05-30 17:40 Claude Sonnet 4.5: 支持仓库根级别文件（如 .gitignore），不再限制只能在 soundproof-agent/ 下
 """
 实机测试期补丁打包脚本（ADR-013）。
 
@@ -41,8 +45,10 @@ from typing import Iterable, List, Set
 
 # 工程根（脚本所在目录的父级），相对路径都以此为基准。
 PROJECT_ROOT = Path(__file__).resolve().parent.parent  # soundproof-agent/
-PATCHES_DIR = PROJECT_ROOT.parent / "patches"  # /home/user/test/patches/
-ZIP_INNER_PREFIX = "soundproof-agent"  # zip 内目录前缀
+REPO_ROOT = PROJECT_ROOT.parent  # 仓库根，比如 /home/user/test/（含 .gitignore 等仓库根级文件）
+PATCHES_DIR = REPO_ROOT / "patches"
+ZIP_INNER_PREFIX = "soundproof-agent"  # zip 内 soundproof-agent/ 文件的目录前缀
+REPO_ROOT_FILES = {".gitignore", "README.md", ".env.example"}  # 仓库根可入补丁的白名单
 
 EXCLUDE_DIRS = {
     "runtime", "__pycache__", ".git", "patches", ".venv", "node_modules",
@@ -156,6 +162,13 @@ def _collect_via_since_commit(since: str) -> List[Path]:
 
 
 def _collect_explicit(file_args: List[str]) -> List[Path]:
+    """收集显式指定的文件路径。
+
+    返回的 Path 是相对路径：
+    - 如果文件在 soundproof-agent/ 下，相对路径是 'src/...' / 'docs/...' 之类（zip 内会加 soundproof-agent/ 前缀）
+    - 如果文件在仓库根（白名单），相对路径以 ROOT/ 开头（zip 内不加 soundproof-agent/ 前缀）
+    """
+
     files: List[Path] = []
     for f in file_args:
         p = Path(f)
@@ -163,7 +176,10 @@ def _collect_explicit(file_args: List[str]) -> List[Path]:
             # 优先尝试以 PROJECT_ROOT 为基准
             candidate = (PROJECT_ROOT / p).resolve()
             if not candidate.exists():
-                # 再尝试当前工作目录
+                # 再尝试仓库根
+                candidate = (REPO_ROOT / p).resolve()
+            if not candidate.exists():
+                # 最后尝试当前工作目录
                 candidate = (Path.cwd() / p).resolve()
             p = candidate
         else:
@@ -174,15 +190,26 @@ def _collect_explicit(file_args: List[str]) -> List[Path]:
         if not p.is_file():
             sys.stderr.write(f"[警告] 跳过非文件：{f}\n")
             continue
+        # 先看是不是 soundproof-agent/ 下的文件
         try:
             rel = p.relative_to(PROJECT_ROOT)
+            if _is_excluded(rel):
+                sys.stderr.write(f"[警告] 文件在排除列表，跳过：{rel}\n")
+                continue
+            files.append(rel)
+            continue
         except ValueError:
-            sys.stderr.write(f"[警告] 文件不在 soundproof-agent/ 下，跳过：{f}\n")
-            continue
-        if _is_excluded(rel):
-            sys.stderr.write(f"[警告] 文件在排除列表，跳过：{rel}\n")
-            continue
-        files.append(rel)
+            pass
+        # 否则看是不是仓库根白名单文件
+        try:
+            rel_to_repo = p.relative_to(REPO_ROOT)
+            if rel_to_repo.name in REPO_ROOT_FILES and len(rel_to_repo.parts) == 1:
+                # 用 ROOT/ 前缀区分仓库根级文件
+                files.append(Path("__REPO_ROOT__") / rel_to_repo)
+                continue
+        except ValueError:
+            pass
+        sys.stderr.write(f"[警告] 文件不在 soundproof-agent/ 或仓库根白名单 {REPO_ROOT_FILES} 下，跳过：{f}\n")
     return files
 
 
@@ -233,8 +260,13 @@ def _build_notes(files: List[Path], desc: str, stamp: str) -> str:
         "",
     ]
     for f in sorted(files):
-        lines.append(f"- `{f.as_posix()}`")
+        if f.parts and f.parts[0] == "__REPO_ROOT__":
+            actual = Path(*f.parts[1:])
+            lines.append(f"- `{actual.as_posix()}` （仓库根级文件，覆盖到 `/Users/naturist/MusicProject/Shopping-Agent/{actual.as_posix()}`）")
+        else:
+            lines.append(f"- `{f.as_posix()}` （即 `soundproof-agent/{f.as_posix()}`）")
     lines.append("")
+    lines.append("> ⚠️ 注意：本补丁含仓库根级文件（如 `.gitignore`），请确保在仓库根（`/Users/naturist/MusicProject/Shopping-Agent/`）下解压，让 zip 内的文件能落到对应位置。")
     return "\n".join(lines)
 
 
@@ -250,8 +282,15 @@ def make_patch(files: List[Path], desc: str) -> Path:
         # 写入 PATCH_NOTES.md 在 zip 根目录
         zf.writestr("PATCH_NOTES.md", notes)
         for rel in files:
-            abs_path = PROJECT_ROOT / rel
-            arcname = f"{ZIP_INNER_PREFIX}/{rel.as_posix()}"
+            # 处理仓库根级文件（用 __REPO_ROOT__ 前缀标记）
+            if rel.parts and rel.parts[0] == "__REPO_ROOT__":
+                actual_rel = Path(*rel.parts[1:])
+                abs_path = REPO_ROOT / actual_rel
+                # zip 内放到根目录，用户解压时落到 Shopping-Agent/ 下
+                arcname = actual_rel.as_posix()
+            else:
+                abs_path = PROJECT_ROOT / rel
+                arcname = f"{ZIP_INNER_PREFIX}/{rel.as_posix()}"
             zf.write(str(abs_path), arcname)
 
     return zip_path
